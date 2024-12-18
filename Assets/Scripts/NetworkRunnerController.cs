@@ -16,6 +16,13 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
 
     private NetworkRunner networkRunnerInstance;
 
+    public string LocalPlayerNickName { get; private set; }
+
+    public void SetPlayerNickName(string str)
+    {
+        LocalPlayerNickName = str;
+    }
+
     public void ShutDownRunner()
     {
         networkRunnerInstance.Shutdown();
