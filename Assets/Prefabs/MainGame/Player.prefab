@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2309611096938695002}
   - component: {fileID: 2019516757312737361}
   - component: {fileID: 8392594801382660466}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Graphic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,7 +120,7 @@ GameObject:
   - component: {fileID: 4460064098070927771}
   - component: {fileID: 2857788188153589649}
   - component: {fileID: 5865063273548323087}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: HealthBarFrame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -197,7 +197,7 @@ GameObject:
   - component: {fileID: 644092388337145178}
   - component: {fileID: 6427567641831200929}
   - component: {fileID: 2840283957771489796}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Text (TMP) (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -332,7 +332,7 @@ GameObject:
   - component: {fileID: 1938064367549651259}
   - component: {fileID: 3698006421597355976}
   - component: {fileID: 7108169392616610430}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: LocalPlayerCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -353,7 +353,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 351525654685641929}
-  m_Father: {fileID: 1983783128029681646}
+  m_Father: {fileID: 326911474064966005}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &1938064367549651259
 Camera:
@@ -459,7 +459,7 @@ GameObject:
   - component: {fileID: 5629796941733825278}
   - component: {fileID: 3120983493233289179}
   - component: {fileID: 6202443224828712582}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Black Rect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -525,6 +525,56 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &2492393445147997119
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 724502600531490562}
+  - component: {fileID: 6562307069060840532}
+  m_Layer: 6
+  m_Name: HitBox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &724502600531490562
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2492393445147997119}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 326911474064966005}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6562307069060840532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2492393445147997119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1014831617, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Type: 1
+  SphereRadius: 0
+  BoxExtents: {x: 0.2, y: 0.3, z: 0.15}
+  Offset: {x: -0.03, y: -0.12, z: 0}
+  Root: {fileID: 3212915577170586526}
+  GizmosColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!1 &2747660901478972182
 GameObject:
   m_ObjectHideFlags: 0
@@ -535,7 +585,7 @@ GameObject:
   m_Component:
   - component: {fileID: 351525654685641929}
   - component: {fileID: 6614552248260962013}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Virtual Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -597,6 +647,37 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 5712237392941865823}
+--- !u!1 &3434898912038059190
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 502410996598781311}
+  m_Layer: 6
+  m_Name: Fire Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &502410996598781311
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3434898912038059190}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.332, y: -0.217, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 580753125108114969}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3624581305649268852
 GameObject:
   m_ObjectHideFlags: 0
@@ -607,7 +688,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8398519489947045794}
   - component: {fileID: 5701964612895453090}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -698,7 +779,8 @@ GameObject:
   - component: {fileID: 5036468498151270605}
   - component: {fileID: 2869690719558536823}
   - component: {fileID: 4096888625543232722}
-  m_Layer: 0
+  - component: {fileID: 3212915577170586526}
+  m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -719,7 +801,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 326911474064966005}
-  - {fileID: 2211789110001601263}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6715685644319444312
@@ -748,6 +829,7 @@ MonoBehaviour:
   - {fileID: 2190628619586274179}
   - {fileID: 5036468498151270605}
   - {fileID: 2869690719558536823}
+  - {fileID: 3212915577170586526}
   SimulationBehaviours: []
 --- !u!50 &8803044729417997785
 Rigidbody2D:
@@ -838,7 +920,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.034939766, y: -0.0796769}
+  m_Offset: {x: -0.034939766, y: -0.12092334}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -849,7 +931,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.42863166, y: 0.6925145}
+  m_Size: {x: 0.42863166, y: 0.6100216}
   m_EdgeRadius: 0
 --- !u!114 &2190628619586274179
 MonoBehaviour:
@@ -901,10 +983,15 @@ MonoBehaviour:
   WordOffset: 0
   WordCount: 0
   _interpolationDataSource: 0
+  bulletPrefab:
+    RawGuidValue: 53b5c9d086d213a46b7736e553d60bed
+  firePointPos: {fileID: 502410996598781311}
   delayBetweenShots: 0.18
   muzzleEffect: {fileID: 6632792758920190516}
   localCamera: {fileID: 1938064367549651259}
   pivotToRotate: {fileID: 5198744988947810204}
+  _IsHoldingShootingKey:
+    _value: 0
 --- !u!114 &4096888625543232722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -920,6 +1007,27 @@ MonoBehaviour:
   animator: {fileID: 8392594801382660466}
   pivotGunTransform: {fileID: 5198744988947810204}
   canvasTransform: {fileID: 8249056946765162753}
+--- !u!114 &3212915577170586526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4756324653431039057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1039544458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WordOffset: 0
+  WordCount: 0
+  _interpolationDataSource: 0
+  Config: 1
+  BroadRadius: 0.49111664
+  Offset: {x: 0, y: 0, z: 0}
+  GizmosColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  Hitboxes:
+  - {fileID: 6562307069060840532}
 --- !u!1 &4902142258930229463
 GameObject:
   m_ObjectHideFlags: 0
@@ -930,7 +1038,7 @@ GameObject:
   m_Component:
   - component: {fileID: 580753125108114969}
   - component: {fileID: 1692121286510797944}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Gun Graphic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -951,6 +1059,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6632792758920190519}
+  - {fileID: 502410996598781311}
   m_Father: {fileID: 5198744988947810204}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1692121286510797944
@@ -1017,7 +1126,7 @@ GameObject:
   - component: {fileID: 101676728198226901}
   - component: {fileID: 3800455619087873608}
   - component: {fileID: 3507382288640038672}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CanvasWorldSpace
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1118,7 +1227,7 @@ GameObject:
   - component: {fileID: 6632792758920190519}
   - component: {fileID: 6632792758920190516}
   - component: {fileID: 6632792758920190517}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MuzzleEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6018,7 +6127,7 @@ GameObject:
   - component: {fileID: 4639118629560995122}
   - component: {fileID: 3314778720109447658}
   - component: {fileID: 3612428873295380288}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: HealthFillAmount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6091,7 +6200,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5198744988947810204}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GunPivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6125,7 +6234,7 @@ GameObject:
   - component: {fileID: 5712237392941865823}
   - component: {fileID: 8486104257875297286}
   - component: {fileID: 1818981742791731226}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: cm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6213,7 +6322,7 @@ GameObject:
   - component: {fileID: 1499558645366565536}
   - component: {fileID: 7983619198694441927}
   - component: {fileID: 5803379355898981341}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 'Name Text '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6345,7 +6454,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 326911474064966005}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SyncObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6365,6 +6474,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 724502600531490562}
+  - {fileID: 2211789110001601263}
   - {fileID: 2309611096938695002}
   m_Father: {fileID: 1983783128029681646}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
