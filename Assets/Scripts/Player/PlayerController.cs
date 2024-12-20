@@ -17,7 +17,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     private PlayerVisualController playerVisualController;
 
     [Networked, HideInInspector] public NetworkBool IsPlayerAlive { get; set; }
-    [Networked] private TickTimer respawnTimer { get; set; }
+    [Networked] public TickTimer RespawnTimer { get; set; }
     [Networked] private NetworkButtons buttonPrev { get; set; }
     [Networked] private Vector2 serverNextSpawnPoint { get; set; }
     [Networked(OnChanged = nameof(OnNickNameChange))] private NetworkString<_8> playerName { get; set; }
@@ -111,9 +111,9 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     {
         if (IsPlayerAlive) return;
 
-        if(respawnTimer.Expired(Runner))
+        if(RespawnTimer.ExpiredOrNotRunning(Runner))
         {
-            respawnTimer = TickTimer.None;
+            RespawnTimer = TickTimer.None;
             RespawnPlayer();
         }
     }
@@ -151,6 +151,6 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         rigidbody2D.simulated = false;
         IsPlayerAlive = false;
         playerVisualController.TriggerDieAnimation();
-        respawnTimer = TickTimer.CreateFromSeconds(Runner, respawnTime);
+        RespawnTimer = TickTimer.CreateFromSeconds(Runner, respawnTime);
     }
 }
