@@ -8,6 +8,7 @@ public class Bullet : NetworkBehaviour
     [SerializeField] private LayerMask groundLayerMask;
     [SerializeField] private float moveSpeed = 20;
     [SerializeField] private float lifeTimeAmount = 0.8f;
+    [SerializeField] private int damage = 10;
 
     [Networked] private NetworkBool didHitSomething { get; set; }
     [Networked] private TickTimer lifeTimeTimer { get; set; }
@@ -62,12 +63,16 @@ public class Bullet : NetworkBehaviour
                 if (item.Hitbox != null)
                 {
                     var player = item.Hitbox.GetComponentInParent<NetworkObject>();
-                    var didNotHitOurOwnPlayer = player.InputAuthority.PlayerId != Object.InputAuthority.PlayerId;
 
-                    if (didNotHitOurOwnPlayer)
+                    if (player.InputAuthority.PlayerId != Object.InputAuthority.PlayerId)
                     {
-                        //todo damage that player
-                        Debug.Log("Did hit a player");
+                        // Because the bullet can call multiple time difference by FUN
+                        // Use rpc to make sure it just reduce 1 time from server
+                        if (Runner.IsServer)
+                        {
+                            player.GetComponent<PlayerHealthController>().Rpc_DeductPlayerHealth(damage);
+                        }
+
                         didHitSomething = true;
                         break;
                     }

@@ -45,13 +45,18 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
     private void SetLocalObjects()
     {
-        if (Runner.LocalPlayer == Object.HasInputAuthority)
+        if (Runner.LocalPlayer == Object.InputAuthority)
         {
             cam.SetActive(true);
 
             //Update new join player nickname to all client
             var nickName = GlobalManagers.Instance.NetworkRunnerController.LocalPlayerNickName;
             RpcSetNickName(nickName);
+        }
+        else
+        {
+            //Make sure all proxy in screen is snapshot, not be predicted, easier to caculate Lag Compensation
+            GetComponent<NetworkRigidbody2D>().InterpolationDataSource = InterpolationDataSources.Snapshots;
         }
     }
 

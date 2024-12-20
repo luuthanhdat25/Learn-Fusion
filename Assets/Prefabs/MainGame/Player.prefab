@@ -198,7 +198,7 @@ GameObject:
   - component: {fileID: 6427567641831200929}
   - component: {fileID: 2840283957771489796}
   m_Layer: 6
-  m_Name: Text (TMP) (1)
+  m_Name: Health Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -780,6 +780,7 @@ GameObject:
   - component: {fileID: 2869690719558536823}
   - component: {fileID: 4096888625543232722}
   - component: {fileID: 3212915577170586526}
+  - component: {fileID: 5354570273417953225}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -830,6 +831,7 @@ MonoBehaviour:
   - {fileID: 5036468498151270605}
   - {fileID: 2869690719558536823}
   - {fileID: 3212915577170586526}
+  - {fileID: 5354570273417953225}
   SimulationBehaviours: []
 --- !u!50 &8803044729417997785
 Rigidbody2D:
@@ -1028,6 +1030,23 @@ MonoBehaviour:
   GizmosColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   Hitboxes:
   - {fileID: 6562307069060840532}
+--- !u!114 &5354570273417953225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4756324653431039057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc9c9a7ab79b0404e9f4f789b70bf98a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WordOffset: 0
+  WordCount: 0
+  _interpolationDataSource: 0
+  healthFillAmount: {fileID: 3612428873295380288}
+  healthAmountText: {fileID: 2840283957771489796}
 --- !u!1 &4902142258930229463
 GameObject:
   m_ObjectHideFlags: 0
