@@ -6,7 +6,10 @@ using UnityEngine.UI;
 public class PlayerHealthController : NetworkBehaviour
 {
     [SerializeField] private Image healthFillAmount;
+    [SerializeField] private Animator bloodScreenHitAnimator;
     [SerializeField] private TextMeshProUGUI healthAmountText;
+    [SerializeField] private PlayerCameraController cameraController;
+
     [Networked(OnChanged = nameof(HealthValueChanged))] private int currentHealthAmount { get; set; }
     private const int MAX_HEALTH_AMOUNT = 100;
 
@@ -60,7 +63,8 @@ public class PlayerHealthController : NetworkBehaviour
         if (isLocalPlayer)
         {
             Debug.Log("local player got hit!");
-            //Todo shake the player camera and play the blood hit animation
+            cameraController.ShakeCamera(new Vector3(0.2f, 0.1f));
+            bloodScreenHitAnimator.Play("HeartIdle");
         }
 
         if (healthAmount <= 0)
