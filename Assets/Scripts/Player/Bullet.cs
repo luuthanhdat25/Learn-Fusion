@@ -62,9 +62,10 @@ public class Bullet : NetworkBehaviour
             {
                 if (item.Hitbox != null)
                 {
-                    var player = item.Hitbox.GetComponentInParent<NetworkObject>();
+                    var player = item.Hitbox.GetComponentInParent<PlayerController>();
 
-                    if (player.InputAuthority.PlayerId != Object.InputAuthority.PlayerId)
+                    if (player.Object.InputAuthority.PlayerId != Object.InputAuthority.PlayerId
+                        && player.IsPlayerAlive)
                     {
                         // Because the bullet can call multiple time difference by FUN
                         // Use rpc to make sure it just reduce 1 time from server

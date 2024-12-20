@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class PlayerVisualController : MonoBehaviour
 {
@@ -53,5 +54,15 @@ public class PlayerVisualController : MonoBehaviour
     {
         var xValue = isFacingRight ? originalScale.x : -originalScale.y;
         trans.localScale = new Vector3(xValue, originalScale.y, originalScale.z);
+    }
+
+    public void TriggerDieAnimation()
+    {
+        animator.SetTrigger("Die");
+    }
+
+    public void TriggerRespawnAnimation()
+    {
+        animator.SetTrigger("Respawn");
     }
 }

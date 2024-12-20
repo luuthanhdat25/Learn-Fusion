@@ -29,7 +29,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8398519489947045794}
   - {fileID: 5198744988947810204}
@@ -1053,13 +1053,13 @@ GameObject:
   - component: {fileID: 8803044729417997785}
   - component: {fileID: 5998456779196303436}
   - component: {fileID: 8589113760015384501}
-  - component: {fileID: 2190628619586274179}
   - component: {fileID: 5036468498151270605}
   - component: {fileID: 2869690719558536823}
   - component: {fileID: 4096888625543232722}
   - component: {fileID: 3212915577170586526}
   - component: {fileID: 5354570273417953225}
   - component: {fileID: 8572455033709328772}
+  - component: {fileID: 2190628619586274179}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -1106,11 +1106,11 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 5998456779196303436}
-  - {fileID: 2190628619586274179}
   - {fileID: 5036468498151270605}
   - {fileID: 2869690719558536823}
   - {fileID: 3212915577170586526}
   - {fileID: 5354570273417953225}
+  - {fileID: 2190628619586274179}
   SimulationBehaviours: []
 --- !u!50 &8803044729417997785
 Rigidbody2D:
@@ -1214,25 +1214,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.42863166, y: 0.6100216}
   m_EdgeRadius: 0
---- !u!114 &2190628619586274179
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4756324653431039057}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b53aca481271a364b9c0faa676a66ccd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  WordOffset: 0
-  WordCount: 0
-  _interpolationDataSource: 0
-  playerNameText: {fileID: 5803379355898981341}
-  moveSpeed: 6
-  jumpForce: 1000
-  cam: {fileID: 1342776279434968743}
 --- !u!114 &5036468498151270605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1271,6 +1252,7 @@ MonoBehaviour:
   muzzleEffect: {fileID: 6632792758920190516}
   localCamera: {fileID: 1938064367549651259}
   pivotToRotate: {fileID: 5198744988947810204}
+  playerController: {fileID: 2190628619586274179}
   _IsHoldingShootingKey:
     _value: 0
 --- !u!114 &4096888625543232722
@@ -1328,6 +1310,7 @@ MonoBehaviour:
   bloodScreenHitAnimator: {fileID: 4411915078226562492}
   healthAmountText: {fileID: 2840283957771489796}
   cameraController: {fileID: 8572455033709328772}
+  playerController: {fileID: 2190628619586274179}
 --- !u!114 &8572455033709328772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1341,6 +1324,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   impulseSource: {fileID: 885999905013342572}
+--- !u!114 &2190628619586274179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4756324653431039057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b53aca481271a364b9c0faa676a66ccd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WordOffset: 0
+  WordCount: 0
+  _interpolationDataSource: 0
+  playerNameText: {fileID: 5803379355898981341}
+  moveSpeed: 6
+  jumpForce: 1000
+  respawnTime: 3
+  cam: {fileID: 1342776279434968743}
+  playerHealthController: {fileID: 5354570273417953225}
+  _IsPlayerAlive:
+    _value: 0
 --- !u!1 &4902142258930229463
 GameObject:
   m_ObjectHideFlags: 0
@@ -1439,6 +1445,7 @@ GameObject:
   - component: {fileID: 101676728198226901}
   - component: {fileID: 3800455619087873608}
   - component: {fileID: 3507382288640038672}
+  - component: {fileID: 7144537987977754879}
   m_Layer: 6
   m_Name: CanvasWorldSpace
   m_TagString: Untagged
@@ -1529,6 +1536,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!225 &7144537987977754879
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6374090106397502980}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &6632792758920190522
 GameObject:
   m_ObjectHideFlags: 0

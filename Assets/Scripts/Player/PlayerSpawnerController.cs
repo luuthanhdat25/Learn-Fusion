@@ -1,10 +1,19 @@
 using Fusion;
+using System;
 using UnityEngine;
 
 public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerLeft
 {
     [SerializeField] private NetworkPrefabRef playerNetworkPrefab = NetworkPrefabRef.Empty;
     [SerializeField] private Transform[] spawnPoints;
+
+    private void Awake()
+    {
+        if(GlobalManagers.Instance != null)
+        {
+            GlobalManagers.Instance.PlayerSpawnerController = this;
+        }
+    }
 
     /// <summary>
     /// When this object spawn, it will spawn all active player
@@ -30,6 +39,11 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
 
             Runner.SetPlayerObject(playerRef, playerObject);
         }
+    }
+
+    public Vector2 GetRandomSpawnPointPosition()
+    {
+        return spawnPoints[UnityEngine.Random.Range(0, spawnPoints.Length)].transform.position;
     }
 
     /// <summary>

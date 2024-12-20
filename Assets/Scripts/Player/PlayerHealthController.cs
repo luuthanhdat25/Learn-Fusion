@@ -9,6 +9,7 @@ public class PlayerHealthController : NetworkBehaviour
     [SerializeField] private Animator bloodScreenHitAnimator;
     [SerializeField] private TextMeshProUGUI healthAmountText;
     [SerializeField] private PlayerCameraController cameraController;
+    [SerializeField] private PlayerController playerController;
 
     [Networked(OnChanged = nameof(HealthValueChanged))] private int currentHealthAmount { get; set; }
     private const int MAX_HEALTH_AMOUNT = 100;
@@ -69,8 +70,13 @@ public class PlayerHealthController : NetworkBehaviour
 
         if (healthAmount <= 0)
         {
-            //todo kill player
+            playerController.KillPlayer();
             Debug.Log("Player is dead");
         }
+    }
+
+    public void RestoreAllHealth()
+    {
+        currentHealthAmount = MAX_HEALTH_AMOUNT;
     }
 }

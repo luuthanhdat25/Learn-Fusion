@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GlobalManagers : MonoBehaviour
@@ -8,6 +6,7 @@ public class GlobalManagers : MonoBehaviour
     
     [field: SerializeField] public NetworkRunnerController NetworkRunnerController;
     [SerializeField] private GameObject parentObject;
+    public PlayerSpawnerController PlayerSpawnerController { get; set; }
 
     private void Awake()
     {

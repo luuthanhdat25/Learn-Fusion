@@ -10,6 +10,7 @@ public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
     [SerializeField] private ParticleSystem muzzleEffect;
     [SerializeField] private Camera localCamera;
     [SerializeField] private Transform pivotToRotate;
+    [SerializeField] private PlayerController playerController;
 
     // Networked help currentPlayerPivotRotation synchronized in all client
     [Networked] private Quaternion currentPlayerPivotRotation { get; set; }
@@ -20,7 +21,7 @@ public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
 
     public void BeforeUpdate()
     {
-        if(Runner.LocalPlayer == Object.HasInputAuthority)
+        if(Runner.LocalPlayer == Object.InputAuthority && playerController.IsPlayerAlive)
         {
             var direction = localCamera.ScreenToWorldPoint(Input.mousePosition) - transform.position;
             var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -30,7 +31,7 @@ public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
 
     public override void FixedUpdateNetwork()
     {
-        if(Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out var input))
+        if(Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out var input) && playerController.IsPlayerAlive)
         {
             CheckShootInput(input);
 
