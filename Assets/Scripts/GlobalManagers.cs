@@ -8,6 +8,7 @@ public class GlobalManagers : MonoBehaviour
     [SerializeField] private GameObject parentObject;
     public PlayerSpawnerController PlayerSpawnerController { get; set; }
     public ObjectPoolingManager ObjectPoolingManager { get; set; }
+    public GameManager GameManager { get; set; }
 
     private void Awake()
     {

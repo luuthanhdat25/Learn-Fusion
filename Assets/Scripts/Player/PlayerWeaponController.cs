@@ -21,7 +21,7 @@ public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
 
     public void BeforeUpdate()
     {
-        if(Runner.LocalPlayer == Object.InputAuthority && playerController.IsPlayerAlive)
+        if(Runner.LocalPlayer == Object.InputAuthority && playerController.AcceptAnyInput)
         {
             var direction = localCamera.ScreenToWorldPoint(Input.mousePosition) - transform.position;
             var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -31,13 +31,24 @@ public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
 
     public override void FixedUpdateNetwork()
     {
-        if(Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out var input) && playerController.IsPlayerAlive)
+        if(Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out var input))
         {
-            CheckShootInput(input);
+            if (playerController.AcceptAnyInput)
+            {
+                CheckShootInput(input);
 
-            // Just one player can change currentPlayerPivotRotation
-            // When it change, it will update currentPlayerPivotRotation for all client
-            currentPlayerPivotRotation = input.GunPivotRotation;
+                // Just one player can change currentPlayerPivotRotation
+                // When it change, it will update currentPlayerPivotRotation for all client
+                currentPlayerPivotRotation = input.GunPivotRotation;
+
+            }
+            else
+            {
+                IsHoldingShootingKey = false;
+                playMuzzleEffect = false;
+                buttonPrev = default;
+            }
+
         }
 
         pivotToRotate.rotation = currentPlayerPivotRotation;

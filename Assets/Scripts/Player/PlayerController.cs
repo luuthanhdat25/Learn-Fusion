@@ -16,6 +16,8 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     private PlayerWeaponController playerWeaponController;
     private PlayerVisualController playerVisualController;
 
+    public bool AcceptAnyInput => IsPlayerAlive && !GameManager.IsMatchOver;
+
     [Networked, HideInInspector] public NetworkBool IsPlayerAlive { get; set; }
     [Networked] public TickTimer RespawnTimer { get; set; }
     [Networked] private NetworkButtons buttonPrev { get; set; }
@@ -76,7 +78,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
     public void BeforeUpdate()
     {
-        if(Runner.LocalPlayer == Object.InputAuthority && IsPlayerAlive)
+        if(Runner.LocalPlayer == Object.InputAuthority && AcceptAnyInput)
         {
             horizontal = Input.GetAxisRaw("Horizontal");
         }
@@ -86,7 +88,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     {
         CheckSpawnTimer();
 
-        if (Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out PlayerData input) && IsPlayerAlive)
+        if (Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out PlayerData input) && AcceptAnyInput)
         {
             rigidbody2D.velocity = new Vector2(input.HorizontalInput * moveSpeed, rigidbody2D.velocity.y);
 
