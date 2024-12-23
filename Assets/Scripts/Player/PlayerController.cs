@@ -153,4 +153,11 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         playerVisualController.TriggerDieAnimation();
         RespawnTimer = TickTimer.CreateFromSeconds(Runner, respawnTime);
     }
+
+    // Destroy completed player, not set active false
+    public override void Despawned(NetworkRunner runner, bool hasState)
+    {
+        GlobalManagers.Instance.ObjectPoolingManager.RemoveNetworkObjectFromDic(Object);
+        Destroy(gameObject);
+    }
 }

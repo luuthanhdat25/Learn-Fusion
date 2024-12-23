@@ -7,6 +7,7 @@ public class GlobalManagers : MonoBehaviour
     [field: SerializeField] public NetworkRunnerController NetworkRunnerController;
     [SerializeField] private GameObject parentObject;
     public PlayerSpawnerController PlayerSpawnerController { get; set; }
+    public ObjectPoolingManager ObjectPoolingManager { get; set; }
 
     private void Awake()
     {
