@@ -10,13 +10,16 @@ public class PlayerHealthController : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI healthAmountText;
     [SerializeField] private PlayerCameraController cameraController;
     [SerializeField] private PlayerController playerController;
+    [SerializeField] private LayerMask groundLayerMark;
 
     [Networked(OnChanged = nameof(HealthValueChanged))] private int currentHealthAmount { get; set; }
     private const int MAX_HEALTH_AMOUNT = 100;
+    private Collider2D collider2D;
 
     public override void Spawned()
     {
         currentHealthAmount = MAX_HEALTH_AMOUNT;
+        collider2D = GetComponent<Collider2D>();
     }
 
     // Call from server to server to deduct health
@@ -29,6 +32,18 @@ public class PlayerHealthController : NetworkBehaviour
     private void DamagePlayer(int dmg)
     {
         currentHealthAmount -= dmg;
+    }
+
+    public override void FixedUpdateNetwork()
+    {
+        if (Runner.IsServer && playerController.IsPlayerAlive)
+        {
+            var isHitDeathGround = Runner.GetPhysicsScene2D().OverlapBox(transform.position, collider2D.bounds.size, 0, groundLayerMark);
+            if (isHitDeathGround)
+            {
+                Rpc_DeductPlayerHealth(MAX_HEALTH_AMOUNT);
+            }        
+        }
     }
 
     private static void HealthValueChanged(Changed<PlayerHealthController> changed)

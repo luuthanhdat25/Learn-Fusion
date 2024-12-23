@@ -9,6 +9,7 @@ public class GameManager : NetworkBehaviour
     public Action OnGameOver;
 
     [SerializeField] private Camera camera;
+    [field:SerializeField] public Collider2D cameraBound { get; private set; }
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private float matchTime;
 

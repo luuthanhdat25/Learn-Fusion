@@ -1,4 +1,5 @@
 using Fusion;
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -7,9 +8,13 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     [SerializeField] private TextMeshProUGUI playerNameText;
     [SerializeField] private float moveSpeed = 6;
     [SerializeField] private float jumpForce = 6;
-    [SerializeField] private float respawnTime = 3;
+    [SerializeField] private float respawnTime = 4;
     [SerializeField] private GameObject cam;
     [SerializeField] private PlayerHealthController playerHealthController;
+    
+    [Header("Check Ground")]
+    [SerializeField] private LayerMask groundLayerMark;
+    [SerializeField] private Transform groundDefectTransform;
 
     private float horizontal;
     private Rigidbody2D rigidbody2D;
@@ -20,6 +25,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
     [Networked, HideInInspector] public NetworkBool IsPlayerAlive { get; set; }
     [Networked] public TickTimer RespawnTimer { get; set; }
+    [Networked] private TickTimer respawnToNewSpawnPointTimer { get; set; }
     [Networked] private NetworkButtons buttonPrev { get; set; }
     [Networked] private Vector2 serverNextSpawnPoint { get; set; }
     [Networked(OnChanged = nameof(OnNickNameChange))] private NetworkString<_8> playerName { get; set; }
@@ -42,6 +48,19 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         Shoot
     }
 
+    private void Start()
+    {
+        GlobalManagers.Instance.GameManager.OnGameOver += GameManager_OnGameOver;
+    }
+
+    private void GameManager_OnGameOver()
+    {
+        if (Runner.LocalPlayer == Object.InputAuthority)
+        {
+            rigidbody2D.simulated = false;
+        }
+    }
+
     public override void Spawned()
     {
         rigidbody2D = GetComponent<Rigidbody2D>();
@@ -55,6 +74,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     {
         if (Runner.LocalPlayer == Object.InputAuthority)
         {
+            cam.transform.SetParent(null);
             cam.SetActive(true);
 
             //Update new join player nickname to all client
@@ -86,13 +106,14 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
     public override void FixedUpdateNetwork()
     {
-        CheckSpawnTimer();
+        CheckRespawnTimer();
 
         if (Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out PlayerData input) && AcceptAnyInput)
         {
             rigidbody2D.velocity = new Vector2(input.HorizontalInput * moveSpeed, rigidbody2D.velocity.y);
 
             CheckJumpInput(input);
+            buttonPrev = input.NetworkButtons;
         }
 
         playerVisualController.UpdateScaleTransform(rigidbody2D.velocity);
@@ -101,19 +122,32 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     private void CheckJumpInput(PlayerData input)
     {
         var pressed = input.NetworkButtons.GetPressed(buttonPrev);
-        if(pressed.WasPressed(buttonPrev, PlayerInputButtons.Jump))
+        if(pressed.WasPressed(buttonPrev, PlayerInputButtons.Jump) && IsGround())
         {
             rigidbody2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Force);
         }
-
-        buttonPrev = input.NetworkButtons;
     }
 
-    private void CheckSpawnTimer()
+    public bool IsGround()
+    {
+        return Runner.GetPhysicsScene2D().OverlapBox(
+            groundDefectTransform.position, 
+            groundDefectTransform.localScale, 
+            0, 
+            groundLayerMark);
+    }
+
+    private void CheckRespawnTimer()
     {
         if (IsPlayerAlive) return;
 
-        if(RespawnTimer.ExpiredOrNotRunning(Runner))
+        if (respawnToNewSpawnPointTimer.Expired(Runner))
+        {
+            GetComponent<NetworkRigidbody2D>().TeleportToPosition(serverNextSpawnPoint);
+            respawnToNewSpawnPointTimer = TickTimer.None;
+        }
+
+        if (RespawnTimer.ExpiredOrNotRunning(Runner))
         {
             RespawnTimer = TickTimer.None;
             RespawnPlayer();
@@ -123,7 +157,6 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     private void RespawnPlayer()
     {
         rigidbody2D.simulated = true;
-        rigidbody2D.position = serverNextSpawnPoint;
         IsPlayerAlive = true;
         playerVisualController.TriggerRespawnAnimation();
         playerHealthController.RestoreAllHealth();
@@ -149,7 +182,9 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         if (Runner.IsServer)
         {
             serverNextSpawnPoint = GlobalManagers.Instance.PlayerSpawnerController.GetRandomSpawnPointPosition();
+            respawnToNewSpawnPointTimer = TickTimer.CreateFromSeconds(Runner, respawnTime - 1);
         }
+
         rigidbody2D.simulated = false;
         IsPlayerAlive = false;
         playerVisualController.TriggerDieAnimation();
