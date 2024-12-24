@@ -1,5 +1,7 @@
 fileFormatVersion: 2
-guid: 6dad8e4d07dee1344b71695ba6939342
+guid: 8cfd1e007ea11434aa379a9a3b2f8b66
+labels:
+- FusionDefaultGlobal
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

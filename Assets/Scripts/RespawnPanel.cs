@@ -2,11 +2,16 @@ using UnityEngine;
 using Fusion;
 using TMPro;
 
-public class RespawnPanel : SimulationBehaviour
+public class RespawnPanel : NetworkBehaviour
 {
     [SerializeField] private PlayerController playerController;
     [SerializeField] private TextMeshProUGUI respawnAmountText;
     [SerializeField] private GameObject childObject;
+
+    public override void Spawned()
+    {
+        Runner.SetIsSimulated(Object, true);
+    }
 
     public override void FixedUpdateNetwork()
     {

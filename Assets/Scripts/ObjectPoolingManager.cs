@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using UnityEngine;
 using Fusion;
 using System.Linq;
 
-public class ObjectPoolingManager : MonoBehaviour, INetworkObjectPool
+public class ObjectPoolingManager : NetworkObjectProviderDefault
 {
     private Dictionary<NetworkObject, List<NetworkObject>> prefabsThatHadBeenInstantiated = new();
 
@@ -15,31 +14,29 @@ public class ObjectPoolingManager : MonoBehaviour, INetworkObjectPool
         }
     }
 
-    public NetworkObject AcquireInstance(NetworkRunner runner, NetworkPrefabInfo info)
-    {
-        NetworkProjectConfig.Global.PrefabTable.TryGetPrefab(info.Prefab, out var prefab);
+    protected override NetworkObject InstantiatePrefab(NetworkRunner runner, NetworkObject prefab)
+     {
+         if (prefabsThatHadBeenInstantiated.TryGetValue(prefab, out var networkObjects))
+         {
+             var inactiveObject = networkObjects?.FirstOrDefault(item => item != null && !item.gameObject.activeSelf);
+             if (inactiveObject != null)
+                 return inactiveObject;
+         }
+         else
+         {
+             networkObjects = new List<NetworkObject>();
+             prefabsThatHadBeenInstantiated[prefab] = networkObjects;
+         }
 
-        if (prefabsThatHadBeenInstantiated.TryGetValue(prefab, out var networkObjects))
-        {
-            var inactiveObject = networkObjects?.FirstOrDefault(item => item != null && !item.gameObject.activeSelf);
-            if (inactiveObject != null) return inactiveObject;
-        }
-        else
-        {
-            networkObjects = new List<NetworkObject>();
-            prefabsThatHadBeenInstantiated[prefab] = networkObjects;
-        }
+         var newObj = Instantiate(prefab);
+         networkObjects.Add(newObj);
+         return newObj;
+     }
 
-        var newObject = Instantiate(prefab);
-        networkObjects.Add(newObject);
-
-        return newObject;
-    }
-
-    public void ReleaseInstance(NetworkRunner runner, NetworkObject instance, bool isSceneObject)
-    {
-        instance.gameObject.SetActive(false);
-    }
+     protected override void DestroyPrefabInstance(NetworkRunner runner, NetworkPrefabId prefabId, NetworkObject instance)
+     {
+         instance.gameObject.SetActive(false);
+     }
 
     public void RemoveNetworkObjectFromDic(NetworkObject obj)
     {

@@ -12,14 +12,17 @@ public class PlayerHealthController : NetworkBehaviour
     [SerializeField] private PlayerController playerController;
     [SerializeField] private LayerMask groundLayerMark;
 
-    [Networked(OnChanged = nameof(HealthValueChanged))] private int currentHealthAmount { get; set; }
     private const int MAX_HEALTH_AMOUNT = 100;
-    private Collider2D collider2D;
+    private new Collider2D collider2D;
+
+    [Networked] private int currentHealthAmount { get; set; }
+    private ChangeDetector _changes;
 
     public override void Spawned()
     {
         currentHealthAmount = MAX_HEALTH_AMOUNT;
         collider2D = GetComponent<Collider2D>();
+        _changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
     }
 
     // Call from server to server to deduct health
@@ -46,22 +49,24 @@ public class PlayerHealthController : NetworkBehaviour
         }
     }
 
-    private static void HealthValueChanged(Changed<PlayerHealthController> changed)
+    public override void Render()
     {
-        var currentHealth = changed.Behaviour.currentHealthAmount;
-
-        changed.LoadOld();
-        var oldHealth = changed.Behaviour.currentHealthAmount;
-
-        if (currentHealth != oldHealth)
+        foreach (var change in _changes.DetectChanges(this, out var previousBuffer, out var currentBuffer))
         {
-            changed.Behaviour.UpdateUIVisuals(currentHealth);
-
-            //If the player did not spawn OR respawned
-            //Only then do damage
-            if (currentHealth != MAX_HEALTH_AMOUNT)
+            switch (change)
             {
-                changed.Behaviour.GotHit(currentHealth);
+                case nameof(currentHealthAmount):
+                    var reader = GetPropertyReader<int>(nameof(currentHealthAmount));
+                    var (oldHealth, currentHealth) = reader.Read(previousBuffer, currentBuffer);
+                    UpdateUIVisuals(currentHealth);
+
+                    //If the player did not spawn OR respawned
+                    //Only then do damage
+                    if (currentHealth != MAX_HEALTH_AMOUNT)
+                    {
+                        GotHit(currentHealth);
+                    }
+                    break;
             }
         }
     }

@@ -31,10 +31,10 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
 
     private void SpawnPlayer(PlayerRef playerRef)
     {
-        if(Runner.IsServer) //Just only server can spawn
+        if (Runner.IsServer && !Runner.TryGetPlayerObject(playerRef, out _))
         {
-            int index = playerRef % spawnPoints.Length;
-            var spawnPoint = spawnPoints[index].transform.position; 
+            int index = playerRef.AsIndex % spawnPoints.Length;
+            var spawnPoint = spawnPoints[index].position;
             var playerObject = Runner.Spawn(playerNetworkPrefab, spawnPoint, Quaternion.identity, playerRef);
 
             Runner.SetPlayerObject(playerRef, playerObject);

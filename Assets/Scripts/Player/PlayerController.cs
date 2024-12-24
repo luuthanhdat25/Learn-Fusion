@@ -1,4 +1,5 @@
 using Fusion;
+using Fusion.Addons.Physics;
 using System;
 using TMPro;
 using UnityEngine;
@@ -20,6 +21,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     private Rigidbody2D rigidbody2D;
     private PlayerWeaponController playerWeaponController;
     private PlayerVisualController playerVisualController;
+    private ChangeDetector _changes;
 
     public bool AcceptAnyInput => IsPlayerAlive && !GameManager.IsMatchOver;
 
@@ -28,18 +30,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     [Networked] private TickTimer respawnToNewSpawnPointTimer { get; set; }
     [Networked] private NetworkButtons buttonPrev { get; set; }
     [Networked] private Vector2 serverNextSpawnPoint { get; set; }
-    [Networked(OnChanged = nameof(OnNickNameChange))] private NetworkString<_8> playerName { get; set; }
-
-    private static void OnNickNameChange(Changed<PlayerController> changed)
-    {
-        var nickName = changed.Behaviour.playerName;
-        changed.Behaviour.SetPlayerNickName(nickName);
-    }
-
-    private void SetPlayerNickName(NetworkString<_8> nickName)
-    {
-        playerNameText.text = nickName + " " + Object.InputAuthority.PlayerId;
-    }
+    [Networked] private NetworkString<_8> playerName { get; set; }
 
     public enum PlayerInputButtons
     {
@@ -50,6 +41,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
     public override void Spawned()
     {
+        _changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
         rigidbody2D = GetComponent<Rigidbody2D>();
         playerWeaponController = GetComponent<PlayerWeaponController>();
         playerVisualController = GetComponent<PlayerVisualController>();
@@ -70,8 +62,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         }
         else
         {
-            //Make sure all proxy in screen is snapshot, not be predicted, easier to caculate Lag Compensation
-            GetComponent<NetworkRigidbody2D>().InterpolationDataSource = InterpolationDataSources.Snapshots;
+            base.Object.RenderSource = RenderSource.Interpolated;
         }
     }
 
@@ -137,7 +128,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
         if (respawnToNewSpawnPointTimer.Expired(Runner))
         {
-            GetComponent<NetworkRigidbody2D>().TeleportToPosition(serverNextSpawnPoint);
+            GetComponent<NetworkRigidbody2D>().Teleport(serverNextSpawnPoint);
             respawnToNewSpawnPointTimer = TickTimer.None;
         }
 
@@ -158,7 +149,23 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
     public override void Render()
     {
+        foreach (var change in _changes.DetectChanges(this, out var previousBuffer, out var currentBuffer))
+        {
+            switch (change)
+            {
+                case nameof(playerName):
+                    var reader = GetPropertyReader<NetworkString<_8>>(nameof(playerName));
+                    var (oldName, newName) = reader.Read(previousBuffer, currentBuffer);
+                    SetPlayerNickName(newName);
+                    break;
+            }
+        }
         playerVisualController.RendererVisuals(rigidbody2D.velocity, playerWeaponController.IsHoldingShootingKey);
+    }
+
+    private void SetPlayerNickName(NetworkString<_8> nickName)
+    {
+        playerNameText.text = nickName + " " + Object.InputAuthority.PlayerId;
     }
 
     public PlayerData GetPlayerDataInput()
