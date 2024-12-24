@@ -75,8 +75,7 @@ public class PlayerHealthController : NetworkBehaviour
 
     private void GotHit(int healthAmount)
     {
-        var isLocalPlayer = Runner.LocalPlayer == Object.HasInputAuthority;
-        if (isLocalPlayer)
+        if (Object.IsLocalPlayer())
         {
             Debug.Log("local player got hit!");
             cameraController.ShakeCamera(new Vector3(0.2f, 0.1f));

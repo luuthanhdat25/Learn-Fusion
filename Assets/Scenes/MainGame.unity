@@ -895,7 +895,7 @@ MonoBehaviour:
   camera: {fileID: 7301322483961219400}
   <cameraBound>k__BackingField: {fileID: 1594825805}
   timerText: {fileID: 1471380782}
-  matchTime: 60
+  matchTime: 10
 --- !u!4 &1717483199
 Transform:
   m_ObjectHideFlags: 0

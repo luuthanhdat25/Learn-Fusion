@@ -48,19 +48,6 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         Shoot
     }
 
-    private void Start()
-    {
-        GlobalManagers.Instance.GameManager.OnGameOver += GameManager_OnGameOver;
-    }
-
-    private void GameManager_OnGameOver()
-    {
-        if (Runner.LocalPlayer == Object.InputAuthority)
-        {
-            rigidbody2D.simulated = false;
-        }
-    }
-
     public override void Spawned()
     {
         rigidbody2D = GetComponent<Rigidbody2D>();
@@ -72,7 +59,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
     private void SetLocalObjects()
     {
-        if (Runner.LocalPlayer == Object.InputAuthority)
+        if (Object.IsLocalPlayer())
         {
             cam.transform.SetParent(null);
             cam.SetActive(true);
@@ -98,7 +85,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
     public void BeforeUpdate()
     {
-        if(Runner.LocalPlayer == Object.InputAuthority && AcceptAnyInput)
+        if(Object.IsLocalPlayer() && AcceptAnyInput)
         {
             horizontal = Input.GetAxisRaw("Horizontal");
         }
@@ -108,12 +95,19 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     {
         CheckRespawnTimer();
 
-        if (Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out PlayerData input) && AcceptAnyInput)
+        if (Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out PlayerData input))
         {
-            rigidbody2D.velocity = new Vector2(input.HorizontalInput * moveSpeed, rigidbody2D.velocity.y);
+            if (AcceptAnyInput)
+            {
+                rigidbody2D.velocity = new Vector2(input.HorizontalInput * moveSpeed, rigidbody2D.velocity.y);
 
-            CheckJumpInput(input);
-            buttonPrev = input.NetworkButtons;
+                CheckJumpInput(input);
+                buttonPrev = input.NetworkButtons;
+            }
+            else
+            {
+                rigidbody2D.velocity = Vector2.zero;
+            }
         }
 
         playerVisualController.UpdateScaleTransform(rigidbody2D.velocity);
