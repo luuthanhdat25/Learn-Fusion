@@ -1,11 +1,14 @@
 using Fusion;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerLeft
 {
     [SerializeField] private NetworkPrefabRef playerNetworkPrefab = NetworkPrefabRef.Empty;
     [SerializeField] private Transform[] spawnPoints;
+
+    private Dictionary<PlayerRef, NetworkObject> currentSpawnedPlayers = new Dictionary<PlayerRef, NetworkObject>();
 
     private void Awake()
     {
@@ -65,11 +68,17 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
     {
         if (Runner.IsServer)
         {
-            if(Runner.TryGetPlayerObject(playerRef, out NetworkObject playerObject))
+            if(currentSpawnedPlayers.TryGetValue(playerRef, out NetworkObject playerObject))
             {
+                currentSpawnedPlayers.Remove(playerRef);
                 Runner.Despawn(playerObject);
             }
             Runner.SetPlayerObject(playerRef, null);
         }
+    }
+
+    public void AddToEntry(PlayerRef player, NetworkObject obj)
+    {
+        currentSpawnedPlayers.TryAdd(player, obj);
     }
 }

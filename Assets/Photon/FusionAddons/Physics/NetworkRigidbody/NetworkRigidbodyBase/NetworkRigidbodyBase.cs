@@ -150,6 +150,8 @@ namespace Fusion.Addons.Physics {
     /// This allows interpolation leading up to the teleport to have a valid pre-teleport TO target.
     /// </summary>
     public abstract void Teleport(Vector3? position = null, Quaternion? rotation = null);
+
+    public void SetClientPrediction(bool isPredict) => _clientPrediction = isPredict;
   }
 
 }

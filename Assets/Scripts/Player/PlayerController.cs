@@ -3,6 +3,7 @@ using Fusion.Addons.Physics;
 using System;
 using TMPro;
 using UnityEngine;
+using static Unity.Collections.Unicode;
 
 public class PlayerController : NetworkBehaviour, IBeforeUpdate
 {
@@ -18,9 +19,10 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     [SerializeField] private Transform groundDefectTransform;
 
     private float horizontal;
-    private Rigidbody2D rigidbody2D;
+    private new Rigidbody2D rigidbody2D;
     private PlayerWeaponController playerWeaponController;
     private PlayerVisualController playerVisualController;
+    private NetworkRigidbody2D networkRigidbody2D;
     private ChangeDetector _changes;
 
     public bool AcceptAnyInput => IsPlayerAlive && !GameManager.IsMatchOver;
@@ -41,10 +43,16 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
     public override void Spawned()
     {
+        Runner.SetIsSimulated(Object, true);
+
         _changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
         rigidbody2D = GetComponent<Rigidbody2D>();
         playerWeaponController = GetComponent<PlayerWeaponController>();
         playerVisualController = GetComponent<PlayerVisualController>();
+        networkRigidbody2D = GetComponent<NetworkRigidbody2D>();
+
+        GlobalManagers.Instance.PlayerSpawnerController.AddToEntry(base.Object.InputAuthority, base.Object);
+
         IsPlayerAlive = true;
         SetLocalObjects();
     }
@@ -58,18 +66,14 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
             //Update new join player nickname to all client
             var nickName = GlobalManagers.Instance.NetworkRunnerController.LocalPlayerNickName;
-            RpcSetNickName(nickName);
-        }
-        else
-        {
-            base.Object.RenderSource = RenderSource.Interpolated;
+            Rpc_SetNickName(nickName);
         }
     }
 
     //Send RPC to Host
     //RpcTargets defines on which it is executed!
     [Rpc(sources:RpcSources.InputAuthority, RpcTargets.StateAuthority)] //Client send to Server
-    private void RpcSetNickName(NetworkString<_8> nickName)
+    private void Rpc_SetNickName(NetworkString<_8> nickName)
     {
         playerName = nickName;
     }

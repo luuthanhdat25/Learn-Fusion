@@ -20,6 +20,7 @@ public class PlayerHealthController : NetworkBehaviour
 
     public override void Spawned()
     {
+        Runner.SetIsSimulated(Object, true);
         currentHealthAmount = MAX_HEALTH_AMOUNT;
         collider2D = GetComponent<Collider2D>();
         _changes = GetChangeDetector(ChangeDetector.Source.SimulationState);

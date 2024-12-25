@@ -1183,7 +1183,7 @@ GameObject:
   - component: {fileID: 8572455033709328772}
   - component: {fileID: 2190628619586274179}
   - component: {fileID: 692791584759189113}
-  - component: {fileID: 8386306537930212081}
+  - component: {fileID: 4697433740042546707}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -1419,7 +1419,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stateAuthorityChangeErrorCorrectionDelta: 0.15
   SyncScale: 0
-  SyncParent: 1
+  SyncParent: 0
   _interpolationTarget: {fileID: 0}
   UsePreciseRotation: 0
   UseRenderSleepThresholds: 1
@@ -1428,7 +1428,7 @@ MonoBehaviour:
     Position: 0.01
     Rotation: 0.01
     Scale: 0.01
---- !u!114 &8386306537930212081
+--- !u!114 &4697433740042546707
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1440,7 +1440,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SortKey: 4017778931
+  SortKey: 1138696461
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []

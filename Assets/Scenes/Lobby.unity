@@ -132,7 +132,6 @@ GameObject:
   m_Component:
   - component: {fileID: 11042329}
   - component: {fileID: 11042328}
-  - component: {fileID: 11042330}
   m_Layer: 0
   m_Name: NetworkRunnerController
   m_TagString: Untagged
@@ -168,21 +167,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 647238442}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &11042330
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 11042327}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90a93abf1a391964a94e5c139605105b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IsSceneTakeOverEnabled: 1
-  LogSceneLoadErrors: 1
-  AddressableScenesLabel: FusionScenes
 --- !u!114 &59902798 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1223984958444446339, guid: 1712a0b6f441d424eb86b6e332a88f4d, type: 3}

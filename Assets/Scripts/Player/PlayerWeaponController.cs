@@ -22,6 +22,8 @@ public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
 
     public override void Spawned()
     {
+        Runner.SetIsSimulated(Object, true);
+
         _changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
     }
 
