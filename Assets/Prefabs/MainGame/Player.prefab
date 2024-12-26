@@ -1184,6 +1184,7 @@ GameObject:
   - component: {fileID: 2190628619586274179}
   - component: {fileID: 692791584759189113}
   - component: {fileID: 4697433740042546707}
+  - component: {fileID: 3059724121859380305}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -1292,6 +1293,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerController: {fileID: 2190628619586274179}
+  localCamera: {fileID: 1938064367549651259}
 --- !u!114 &2869690719558536823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1309,7 +1311,6 @@ MonoBehaviour:
   firePointPos: {fileID: 502410996598781311}
   delayBetweenShots: 0.18
   muzzleEffect: {fileID: 6632792758920190516}
-  localCamera: {fileID: 1938064367549651259}
   pivotToRotate: {fileID: 5198744988947810204}
   playerController: {fileID: 2190628619586274179}
   _IsHoldingShootingKey:
@@ -1393,12 +1394,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b53aca481271a364b9c0faa676a66ccd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerNameText: {fileID: 5803379355898981341}
   moveSpeed: 6
   jumpForce: 1000
   respawnTime: 3
   cam: {fileID: 1342776279434968743}
   playerHealthController: {fileID: 5354570273417953225}
+  <PlayerWeaponController>k__BackingField: {fileID: 2869690719558536823}
   groundLayerMark:
     serializedVersion: 2
     m_Bits: 128
@@ -1451,8 +1452,26 @@ MonoBehaviour:
   - {fileID: 5354570273417953225}
   - {fileID: 2190628619586274179}
   - {fileID: 692791584759189113}
+  - {fileID: 3059724121859380305}
   - {fileID: 8331395058295569137}
   ForceRemoteRenderTimeframe: 0
+--- !u!114 &3059724121859380305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4756324653431039057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87af0bdccb3a78245bdeba5bfc75b7b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerNameText: {fileID: 5803379355898981341}
+  _NickName:
+    _length: 0
+    _data:
+      Data: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 --- !u!1 &4902142258930229463
 GameObject:
   m_ObjectHideFlags: 0

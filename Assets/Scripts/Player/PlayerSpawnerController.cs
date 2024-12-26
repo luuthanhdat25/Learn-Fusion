@@ -1,6 +1,7 @@
 using Fusion;
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerLeft
@@ -8,7 +9,7 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
     [SerializeField] private NetworkPrefabRef playerNetworkPrefab = NetworkPrefabRef.Empty;
     [SerializeField] private Transform[] spawnPoints;
 
-    private Dictionary<PlayerRef, NetworkObject> currentSpawnedPlayers = new Dictionary<PlayerRef, NetworkObject>();
+    private Dictionary<PlayerRef, NetworkObject> spawnedPlayers = new Dictionary<PlayerRef, NetworkObject>();
 
     private void Awake()
     {
@@ -68,17 +69,20 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
     {
         if (Runner.IsServer)
         {
-            if(currentSpawnedPlayers.TryGetValue(playerRef, out NetworkObject playerObject))
+            if(spawnedPlayers.TryGetValue(playerRef, out NetworkObject playerObject))
             {
-                currentSpawnedPlayers.Remove(playerRef);
+                spawnedPlayers.Remove(playerRef);
                 Runner.Despawn(playerObject);
             }
             Runner.SetPlayerObject(playerRef, null);
         }
     }
 
-    public void AddToEntry(PlayerRef player, NetworkObject obj)
+    public void AddEntry(PlayerRef playerRef, NetworkObject networkObject)
     {
-        currentSpawnedPlayers.TryAdd(player, obj);
+        if (spawnedPlayers.ContainsKey(playerRef) 
+            || networkObject == null) return;
+
+        spawnedPlayers.Add(playerRef, networkObject);
     }
 }

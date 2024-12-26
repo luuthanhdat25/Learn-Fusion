@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,7 +28,7 @@ public class CreateNickNamePanel : LobbyPanelBase
         if(nickName.Length >= MAX_CHAR_FOR_NICKNAME)
         {
             lobbyUIManager.ShowPanel(LobbyPanelType.MiddleSectionPanel);
-            GlobalManagers.Instance.NetworkRunnerController.SetPlayerNickName(nickName);
+            GlobalManagers.Instance.PlayerData.SetNickName(nickName);
         }
     }
 }

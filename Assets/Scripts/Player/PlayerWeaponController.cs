@@ -1,14 +1,12 @@
 using Fusion;
 using UnityEngine;
 
-public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
+public class PlayerWeaponController : NetworkBehaviour
 {
-    public Quaternion LocalQuaternionPivotRot { get; private set; }
     [SerializeField] private NetworkPrefabRef bulletPrefab = NetworkPrefabRef.Empty;
     [SerializeField] private Transform firePointPos;
     [SerializeField] private float delayBetweenShots = 0.18f;
     [SerializeField] private ParticleSystem muzzleEffect;
-    [SerializeField] private Camera localCamera;
     [SerializeField] private Transform pivotToRotate;
     [SerializeField] private PlayerController playerController;
 
@@ -27,19 +25,9 @@ public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
         _changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
     }
 
-    public void BeforeUpdate()
-    {
-        if(Runner.LocalPlayer == Object.InputAuthority && playerController.AcceptAnyInput)
-        {
-            var direction = localCamera.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-            var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            LocalQuaternionPivotRot = Quaternion.AngleAxis(angle, Vector3.forward);
-        }
-    }
-
     public override void FixedUpdateNetwork()
     {
-        if(Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out var input))
+        if(Runner.TryGetInputForPlayer<PlayerNetworkInput>(Object.InputAuthority, out var input))
         {
             if (playerController.AcceptAnyInput)
             {
@@ -62,13 +50,13 @@ public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
         pivotToRotate.rotation = currentPlayerPivotRotation;
     }
 
-    private void CheckShootInput(PlayerData input)
+    private void CheckShootInput(PlayerNetworkInput input)
     {
         var currentBtns = input.NetworkButtons.GetPressed(buttonPrev);
         
-        IsHoldingShootingKey = currentBtns.WasReleased(buttonPrev, PlayerController.PlayerInputButtons.Shoot);
+        IsHoldingShootingKey = currentBtns.WasReleased(buttonPrev, PlayerInputButtons.Shoot);
 
-        if (currentBtns.WasReleased(buttonPrev, PlayerController.PlayerInputButtons.Shoot) && shootCoolDown.ExpiredOrNotRunning(Runner))
+        if (currentBtns.WasReleased(buttonPrev, PlayerInputButtons.Shoot) && shootCoolDown.ExpiredOrNotRunning(Runner))
         {
             shootCoolDown = TickTimer.CreateFromSeconds(Runner, delayBetweenShots);
             playMuzzleEffect = true;

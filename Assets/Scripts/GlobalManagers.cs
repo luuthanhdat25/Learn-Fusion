@@ -10,6 +10,8 @@ public class GlobalManagers : MonoBehaviour
     public ObjectPoolingManager ObjectPoolingManager { get; set; }
     public GameManager GameManager { get; set; }
 
+    public PlayerData PlayerData = new PlayerData(); // Load from server
+
     private void Awake()
     {
         if(Instance == null)
