@@ -1,14 +1,12 @@
 using Fusion;
 using UnityEngine;
 
-public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
+public class PlayerWeaponController : NetworkBehaviour
 {
-    public Quaternion LocalQuaternionPivotRot { get; private set; }
     [SerializeField] private NetworkPrefabRef bulletPrefab = NetworkPrefabRef.Empty;
     [SerializeField] private Transform firePointPos;
     [SerializeField] private float delayBetweenShots = 0.18f;
     [SerializeField] private ParticleSystem muzzleEffect;
-    [SerializeField] private Camera localCamera;
     [SerializeField] private Transform pivotToRotate;
     [SerializeField] private PlayerController playerController;
 
@@ -16,22 +14,20 @@ public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
     [Networked] private Quaternion currentPlayerPivotRotation { get; set; }
     [Networked] private NetworkButtons buttonPrev { get; set; }
     [Networked] private TickTimer shootCoolDown { get; set; }
-    [Networked(OnChanged = nameof(OnMuzzleEffectStateChanged))] private NetworkBool playMuzzleEffect { get; set; }
+    [Networked] private NetworkBool playMuzzleEffect { get; set; }
     [Networked, HideInInspector] public NetworkBool IsHoldingShootingKey { get; set; }
+    private ChangeDetector _changes;
 
-    public void BeforeUpdate()
+    public override void Spawned()
     {
-        if(Runner.LocalPlayer == Object.InputAuthority && playerController.AcceptAnyInput)
-        {
-            var direction = localCamera.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-            var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            LocalQuaternionPivotRot = Quaternion.AngleAxis(angle, Vector3.forward);
-        }
+        Runner.SetIsSimulated(Object, true);
+
+        _changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
     }
 
     public override void FixedUpdateNetwork()
     {
-        if(Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out var input))
+        if(Runner.TryGetInputForPlayer<PlayerNetworkInput>(Object.InputAuthority, out var input))
         {
             if (playerController.AcceptAnyInput)
             {
@@ -54,17 +50,20 @@ public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
         pivotToRotate.rotation = currentPlayerPivotRotation;
     }
 
-    private void CheckShootInput(PlayerData input)
+    private void CheckShootInput(PlayerNetworkInput input)
     {
         var currentBtns = input.NetworkButtons.GetPressed(buttonPrev);
         
-        IsHoldingShootingKey = currentBtns.WasReleased(buttonPrev, PlayerController.PlayerInputButtons.Shoot);
+        IsHoldingShootingKey = currentBtns.WasReleased(buttonPrev, PlayerInputButtons.Shoot);
 
-        if (currentBtns.WasReleased(buttonPrev, PlayerController.PlayerInputButtons.Shoot) && shootCoolDown.ExpiredOrNotRunning(Runner))
+        if (currentBtns.WasReleased(buttonPrev, PlayerInputButtons.Shoot) && shootCoolDown.ExpiredOrNotRunning(Runner))
         {
             shootCoolDown = TickTimer.CreateFromSeconds(Runner, delayBetweenShots);
             playMuzzleEffect = true;
-            Runner.Spawn(bulletPrefab, firePointPos.position, firePointPos.rotation, Object.InputAuthority);
+            if (Runner.IsServer)
+            {
+                Runner.Spawn(bulletPrefab, firePointPos.position, firePointPos.rotation, Object.InputAuthority);
+            }
         }
         else
         {
@@ -74,15 +73,18 @@ public class PlayerWeaponController : NetworkBehaviour, IBeforeUpdate
         buttonPrev = input.NetworkButtons;
     }
 
-    private static void OnMuzzleEffectStateChanged(Changed<PlayerWeaponController> changed)
+    public override void Render()
     {
-        var currentState = changed.Behaviour.playMuzzleEffect;
-        changed.LoadOld();
-        var oldState = changed.Behaviour.playMuzzleEffect;
-
-        if (currentState != oldState)
+        foreach (var change in _changes.DetectChanges(this, out var previousBuffer, out var currentBuffer))
         {
-            changed.Behaviour.PlayOrStopMuzzleEffect(currentState);
+            switch (change)
+            {
+                case nameof(playMuzzleEffect):
+                    var reader = GetPropertyReader<NetworkBool>(nameof(playMuzzleEffect));
+                    var (oldValue, newValue) = reader.Read(previousBuffer, currentBuffer);
+                    PlayOrStopMuzzleEffect(newValue);
+                    break;
+            }
         }
     }
 

@@ -1,11 +1,15 @@
 using Fusion;
 using System;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerLeft
 {
     [SerializeField] private NetworkPrefabRef playerNetworkPrefab = NetworkPrefabRef.Empty;
     [SerializeField] private Transform[] spawnPoints;
+
+    private Dictionary<PlayerRef, NetworkObject> spawnedPlayers = new Dictionary<PlayerRef, NetworkObject>();
 
     private void Awake()
     {
@@ -31,10 +35,10 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
 
     private void SpawnPlayer(PlayerRef playerRef)
     {
-        if(Runner.IsServer) //Just only server can spawn
+        if (Runner.IsServer && !Runner.TryGetPlayerObject(playerRef, out _))
         {
-            int index = playerRef % spawnPoints.Length;
-            var spawnPoint = spawnPoints[index].transform.position; 
+            int index = playerRef.AsIndex % spawnPoints.Length;
+            var spawnPoint = spawnPoints[index].position;
             var playerObject = Runner.Spawn(playerNetworkPrefab, spawnPoint, Quaternion.identity, playerRef);
 
             Runner.SetPlayerObject(playerRef, playerObject);
@@ -65,11 +69,20 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
     {
         if (Runner.IsServer)
         {
-            if(Runner.TryGetPlayerObject(playerRef, out NetworkObject playerObject))
+            if(spawnedPlayers.TryGetValue(playerRef, out NetworkObject playerObject))
             {
+                spawnedPlayers.Remove(playerRef);
                 Runner.Despawn(playerObject);
             }
             Runner.SetPlayerObject(playerRef, null);
         }
+    }
+
+    public void AddEntry(PlayerRef playerRef, NetworkObject networkObject)
+    {
+        if (spawnedPlayers.ContainsKey(playerRef) 
+            || networkObject == null) return;
+
+        spawnedPlayers.Add(playerRef, networkObject);
     }
 }

@@ -358,9 +358,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fe704412707f6a46b9b8acfaa72611c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WordOffset: 0
-  WordCount: 0
-  _interpolationDataSource: 3
   playerNetworkPrefab:
     RawGuidValue: e4eac09b829d6ba46bb2378378d9b46b
   spawnPoints:
@@ -449,19 +446,14 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SortKey: 3336373561
   ObjectInterest: 1
-  DefaultInterestGroups: []
-  DestroyWhenStateAuthorityLeaves: 0
-  AllowStateAuthorityOverride: 1
-  AoiPositionSource: {fileID: 0}
-  Flags: 2561
-  NetworkGuid:
-    RawGuidValue: 59556e504b064c72ae08e282c89cd546
+  Flags: 264705
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 590434555}
   - {fileID: 1717483198}
-  SimulationBehaviours: []
+  ForceRemoteRenderTimeframe: 0
 --- !u!1 &880306456
 GameObject:
   m_ObjectHideFlags: 0
@@ -889,13 +881,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eac8c79222d329a4f96c4212fc91c4ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WordOffset: 0
-  WordCount: 0
-  _interpolationDataSource: 3
   camera: {fileID: 7301322483961219400}
   <cameraBound>k__BackingField: {fileID: 1594825805}
   timerText: {fileID: 1471380782}
-  matchTime: 10
+  matchTime: 300
 --- !u!4 &1717483199
 Transform:
   m_ObjectHideFlags: 0

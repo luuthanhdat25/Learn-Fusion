@@ -1,25 +1,24 @@
 using Fusion;
-using System;
-using TMPro;
+using Fusion.Addons.Physics;
 using UnityEngine;
 
-public class PlayerController : NetworkBehaviour, IBeforeUpdate
+public class PlayerController : NetworkBehaviour
 {
-    [SerializeField] private TextMeshProUGUI playerNameText;
     [SerializeField] private float moveSpeed = 6;
     [SerializeField] private float jumpForce = 6;
     [SerializeField] private float respawnTime = 4;
     [SerializeField] private GameObject cam;
     [SerializeField] private PlayerHealthController playerHealthController;
+    [field: SerializeField] public PlayerWeaponController PlayerWeaponController { get; private set; }
     
     [Header("Check Ground")]
     [SerializeField] private LayerMask groundLayerMark;
     [SerializeField] private Transform groundDefectTransform;
 
-    private float horizontal;
-    private Rigidbody2D rigidbody2D;
-    private PlayerWeaponController playerWeaponController;
+    private new Rigidbody2D rigidbody2D;
     private PlayerVisualController playerVisualController;
+    private NetworkRigidbody2D networkRigidbody2D;
+    private ChangeDetector _changes;
 
     public bool AcceptAnyInput => IsPlayerAlive && !GameManager.IsMatchOver;
 
@@ -28,31 +27,15 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     [Networked] private TickTimer respawnToNewSpawnPointTimer { get; set; }
     [Networked] private NetworkButtons buttonPrev { get; set; }
     [Networked] private Vector2 serverNextSpawnPoint { get; set; }
-    [Networked(OnChanged = nameof(OnNickNameChange))] private NetworkString<_8> playerName { get; set; }
-
-    private static void OnNickNameChange(Changed<PlayerController> changed)
-    {
-        var nickName = changed.Behaviour.playerName;
-        changed.Behaviour.SetPlayerNickName(nickName);
-    }
-
-    private void SetPlayerNickName(NetworkString<_8> nickName)
-    {
-        playerNameText.text = nickName + " " + Object.InputAuthority.PlayerId;
-    }
-
-    public enum PlayerInputButtons
-    {
-        None,
-        Jump,
-        Shoot
-    }
 
     public override void Spawned()
     {
+        Runner.SetIsSimulated(Object, true);
+
+        _changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
         rigidbody2D = GetComponent<Rigidbody2D>();
-        playerWeaponController = GetComponent<PlayerWeaponController>();
         playerVisualController = GetComponent<PlayerVisualController>();
+        networkRigidbody2D = GetComponent<NetworkRigidbody2D>();
         IsPlayerAlive = true;
         SetLocalObjects();
     }
@@ -63,31 +46,6 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         {
             cam.transform.SetParent(null);
             cam.SetActive(true);
-
-            //Update new join player nickname to all client
-            var nickName = GlobalManagers.Instance.NetworkRunnerController.LocalPlayerNickName;
-            RpcSetNickName(nickName);
-        }
-        else
-        {
-            //Make sure all proxy in screen is snapshot, not be predicted, easier to caculate Lag Compensation
-            GetComponent<NetworkRigidbody2D>().InterpolationDataSource = InterpolationDataSources.Snapshots;
-        }
-    }
-
-    //Send RPC to Host
-    //RpcTargets defines on which it is executed!
-    [Rpc(sources:RpcSources.InputAuthority, RpcTargets.StateAuthority)] //Client send to Server
-    private void RpcSetNickName(NetworkString<_8> nickName)
-    {
-        playerName = nickName;
-    }
-
-    public void BeforeUpdate()
-    {
-        if(Object.IsLocalPlayer() && AcceptAnyInput)
-        {
-            horizontal = Input.GetAxisRaw("Horizontal");
         }
     }
 
@@ -95,7 +53,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
     {
         CheckRespawnTimer();
 
-        if (Runner.TryGetInputForPlayer<PlayerData>(Object.InputAuthority, out PlayerData input))
+        if (Runner.TryGetInputForPlayer<PlayerNetworkInput>(Object.InputAuthority, out PlayerNetworkInput input))
         {
             if (AcceptAnyInput)
             {
@@ -113,7 +71,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
         playerVisualController.UpdateScaleTransform(rigidbody2D.velocity);
     }
 
-    private void CheckJumpInput(PlayerData input)
+    private void CheckJumpInput(PlayerNetworkInput input)
     {
         var pressed = input.NetworkButtons.GetPressed(buttonPrev);
         if(pressed.WasPressed(buttonPrev, PlayerInputButtons.Jump) && IsGround())
@@ -137,7 +95,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
         if (respawnToNewSpawnPointTimer.Expired(Runner))
         {
-            GetComponent<NetworkRigidbody2D>().TeleportToPosition(serverNextSpawnPoint);
+            GetComponent<NetworkRigidbody2D>().Teleport(serverNextSpawnPoint);
             respawnToNewSpawnPointTimer = TickTimer.None;
         }
 
@@ -158,17 +116,7 @@ public class PlayerController : NetworkBehaviour, IBeforeUpdate
 
     public override void Render()
     {
-        playerVisualController.RendererVisuals(rigidbody2D.velocity, playerWeaponController.IsHoldingShootingKey);
-    }
-
-    public PlayerData GetPlayerDataInput()
-    {
-        PlayerData playerData = new PlayerData();
-        playerData.HorizontalInput = horizontal;
-        playerData.GunPivotRotation = playerWeaponController.LocalQuaternionPivotRot;
-        playerData.NetworkButtons.Set(PlayerInputButtons.Jump, Input.GetKey(KeyCode.Space));
-        playerData.NetworkButtons.Set(PlayerInputButtons.Shoot, Input.GetButton("Fire1"));
-        return playerData;
+        playerVisualController.RendererVisuals(rigidbody2D.velocity, PlayerWeaponController.IsHoldingShootingKey);
     }
 
     public void KillPlayer()

@@ -438,6 +438,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1223984959004712813, guid: 1712a0b6f441d424eb86b6e332a88f4d, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 519420031}
+    - target: {fileID: 1223984959004712813, guid: 1712a0b6f441d424eb86b6e332a88f4d, type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1223984959004712814, guid: 1712a0b6f441d424eb86b6e332a88f4d, type: 3}
       propertyPath: m_Name
       value: LobbyCanvas

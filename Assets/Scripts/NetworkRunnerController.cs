@@ -1,10 +1,8 @@
 using Fusion;
 using Fusion.Sockets;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Experimental.AI;
 using UnityEngine.SceneManagement;
 
 public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
@@ -15,13 +13,6 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private NetworkRunner networkRunnerPrefab;
 
     private NetworkRunner networkRunnerInstance;
-
-    public string LocalPlayerNickName { get; private set; }
-
-    public void SetPlayerNickName(string str)
-    {
-        LocalPlayerNickName = str;
-    }
 
     public void ShutDownRunner()
     {
@@ -46,23 +37,28 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
             GameMode = gameMode,
             SessionName = roomName,
             PlayerCount = 4,
-            SceneManager = networkRunnerInstance.GetComponent<INetworkSceneManager>(),
-            ObjectPool = networkRunnerInstance.GetComponent<INetworkObjectPool>()
+            SceneManager = networkRunnerInstance.GetComponent<NetworkSceneManagerDefault>(),
+            ObjectProvider = networkRunnerInstance.GetComponent<ObjectPoolingManager>()
         };
 
         var result = await networkRunnerInstance.StartGame(startGameArgs);
-        if (result.Ok)
+
+        if (networkRunnerInstance.IsServer)
         {
-            networkRunnerInstance.SetActiveScene("MainGame");
-        }
-        else
-        {
-            Debug.LogError($"Failed to start: {result.ShutdownReason}");
+            if (result.Ok)
+            {
+                await networkRunnerInstance.LoadScene("MainGame");
+            }
+            else
+            {
+                Debug.LogError($"Failed to start: {result.ShutdownReason}");
+            }
         }
     }
 
     public void OnConnectedToServer(NetworkRunner runner)
     {
+        Debug.Log("[NetworkRunnerController] OnConnectedToServer");
     }
 
     public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
@@ -79,6 +75,8 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnDisconnectedFromServer(NetworkRunner runner)
     {
+        // Shuts down the local NetworkRunner when the client is disconnected from the server.
+        networkRunnerInstance.Shutdown();
     }
 
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
@@ -124,6 +122,28 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
     }
 
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
+    {
+    }
+
+    public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
+    {
+       
+    }
+
+    public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
+    {
+    }
+
+    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
+    {
+        networkRunnerInstance.Shutdown();
+    }
+
+    public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data)
+    {
+    }
+
+    public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress)
     {
     }
 }

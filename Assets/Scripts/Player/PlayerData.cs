@@ -1,9 +1,27 @@
-using Fusion;
 using UnityEngine;
 
-public struct PlayerData : INetworkInput
+public class PlayerData
 {
-    public float HorizontalInput;
-    public Quaternion GunPivotRotation;
-    public NetworkButtons NetworkButtons;
+    private string _nickName = null;
+
+    public void SetNickName(string nickName)
+    {
+        _nickName = nickName;
+    }
+
+    public string GetNickName()
+    {
+        if (string.IsNullOrWhiteSpace(_nickName))
+        {
+            _nickName = GetRandomNickName();
+        }
+
+        return _nickName;
+    }
+
+    public static string GetRandomNickName()
+    {
+        var rngPlayerNumber = Random.Range(0, 9999);
+        return $"Player {rngPlayerNumber.ToString("0000")}";
+    }
 }

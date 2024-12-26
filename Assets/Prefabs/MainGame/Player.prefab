@@ -930,7 +930,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Type: 1
   SphereRadius: 0
+  CapsuleRadius: 0
   BoxExtents: {x: 0.2, y: 0.3, z: 0.15}
+  CapsuleExtents: 0
   Offset: {x: -0.03, y: -0.12, z: 0}
   Root: {fileID: 3212915577170586526}
   GizmosColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
@@ -1171,9 +1173,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1983783128029681646}
-  - component: {fileID: 6715685644319444312}
   - component: {fileID: 8803044729417997785}
-  - component: {fileID: 5998456779196303436}
   - component: {fileID: 8589113760015384501}
   - component: {fileID: 5036468498151270605}
   - component: {fileID: 2869690719558536823}
@@ -1182,6 +1182,9 @@ GameObject:
   - component: {fileID: 5354570273417953225}
   - component: {fileID: 8572455033709328772}
   - component: {fileID: 2190628619586274179}
+  - component: {fileID: 692791584759189113}
+  - component: {fileID: 4697433740042546707}
+  - component: {fileID: 3059724121859380305}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -1205,36 +1208,6 @@ Transform:
   - {fileID: 326911474064966005}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6715685644319444312
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4756324653431039057}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObjectInterest: 1
-  DefaultInterestGroups: []
-  DestroyWhenStateAuthorityLeaves: 0
-  AllowStateAuthorityOverride: 1
-  AoiPositionSource: {fileID: 0}
-  Flags: 2305
-  NetworkGuid:
-    RawGuidValue: e4eac09b829d6ba46bb2378378d9b46b
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 5998456779196303436}
-  - {fileID: 5036468498151270605}
-  - {fileID: 2869690719558536823}
-  - {fileID: 3212915577170586526}
-  - {fileID: 5354570273417953225}
-  - {fileID: 2190628619586274179}
-  SimulationBehaviours:
-  - {fileID: 8331395058295569137}
 --- !u!50 &8803044729417997785
 Rigidbody2D:
   serializedVersion: 4
@@ -1262,36 +1235,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &5998456779196303436
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4756324653431039057}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1779252708, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  WordOffset: 0
-  WordCount: 0
-  _interpolationDataSource: 0
-  InterpolationSpace: 0
-  InterpolationTarget: {fileID: 326911474064966005}
-  InterpolateErrorCorrection: 0
-  InterpolatedErrorCorrectionSettings:
-    MinRate: 3.3
-    MaxRate: 10
-    PosBlendStart: 0.25
-    PosBlendEnd: 1
-    PosMinCorrection: 0.025
-    PosTeleportDistance: 2
-    RotBlendStart: 0.1
-    RotBlendEnd: 0.5
-    RotTeleportRadians: 1.5
-  UseLegacySharedModeInterpolation: 0
-  TargetInterpolationDelay: 0.03
 --- !u!61 &8589113760015384501
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1349,10 +1292,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c7e1c7cc61f50243b9eaf6a7a92fe50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WordOffset: 0
-  WordCount: 0
-  _interpolationDataSource: 0
   playerController: {fileID: 2190628619586274179}
+  localCamera: {fileID: 1938064367549651259}
 --- !u!114 &2869690719558536823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1365,15 +1306,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8516a564658acf445a9c58e9783a1109, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WordOffset: 0
-  WordCount: 0
-  _interpolationDataSource: 0
   bulletPrefab:
     RawGuidValue: 53b5c9d086d213a46b7736e553d60bed
   firePointPos: {fileID: 502410996598781311}
   delayBetweenShots: 0.18
   muzzleEffect: {fileID: 6632792758920190516}
-  localCamera: {fileID: 1938064367549651259}
   pivotToRotate: {fileID: 5198744988947810204}
   playerController: {fileID: 2190628619586274179}
   _IsHoldingShootingKey:
@@ -1405,9 +1342,6 @@ MonoBehaviour:
   m_Script: {fileID: 1039544458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WordOffset: 0
-  WordCount: 0
-  _interpolationDataSource: 0
   Config: 1
   BroadRadius: 0.49111664
   Offset: {x: 0, y: 0, z: 0}
@@ -1426,9 +1360,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc9c9a7ab79b0404e9f4f789b70bf98a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WordOffset: 0
-  WordCount: 0
-  _interpolationDataSource: 0
   healthFillAmount: {fileID: 3612428873295380288}
   bloodScreenHitAnimator: {fileID: 4411915078226562492}
   healthAmountText: {fileID: 2840283957771489796}
@@ -1463,21 +1394,84 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b53aca481271a364b9c0faa676a66ccd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WordOffset: 0
-  WordCount: 0
-  _interpolationDataSource: 0
-  playerNameText: {fileID: 5803379355898981341}
   moveSpeed: 6
   jumpForce: 1000
   respawnTime: 3
   cam: {fileID: 1342776279434968743}
   playerHealthController: {fileID: 5354570273417953225}
+  <PlayerWeaponController>k__BackingField: {fileID: 2869690719558536823}
   groundLayerMark:
     serializedVersion: 2
     m_Bits: 128
   groundDefectTransform: {fileID: 6127065426335141509}
   _IsPlayerAlive:
     _value: 0
+--- !u!114 &692791584759189113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4756324653431039057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5e690b5fb1084f5ab1c86457af401d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stateAuthorityChangeErrorCorrectionDelta: 0.15
+  SyncScale: 0
+  SyncParent: 0
+  _interpolationTarget: {fileID: 0}
+  UsePreciseRotation: 0
+  UseRenderSleepThresholds: 1
+  RenderThresholds:
+    UseEnergy: 1
+    Position: 0.01
+    Rotation: 0.01
+    Scale: 0.01
+--- !u!114 &4697433740042546707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4756324653431039057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 1138696461
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 5036468498151270605}
+  - {fileID: 2869690719558536823}
+  - {fileID: 3212915577170586526}
+  - {fileID: 5354570273417953225}
+  - {fileID: 2190628619586274179}
+  - {fileID: 692791584759189113}
+  - {fileID: 3059724121859380305}
+  - {fileID: 8331395058295569137}
+  ForceRemoteRenderTimeframe: 0
+--- !u!114 &3059724121859380305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4756324653431039057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87af0bdccb3a78245bdeba5bfc75b7b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerNameText: {fileID: 5803379355898981341}
+  _NickName:
+    _length: 0
+    _data:
+      Data: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 --- !u!1 &4902142258930229463
 GameObject:
   m_ObjectHideFlags: 0

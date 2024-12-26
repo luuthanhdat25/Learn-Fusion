@@ -8,7 +8,7 @@ public class GameManager : NetworkBehaviour
     public static bool IsMatchOver;
     public Action OnGameOver;
 
-    [SerializeField] private Camera camera;
+    [SerializeField] private new Camera camera;
     [field:SerializeField] public Collider2D cameraBound { get; private set; }
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private float matchTime;
@@ -25,6 +25,7 @@ public class GameManager : NetworkBehaviour
 
     public override void Spawned()
     {
+        Runner.SetIsSimulated(Object, true);
         IsMatchOver = false;
         camera.gameObject.SetActive(false);
         matchTimer = TickTimer.CreateFromSeconds(Runner, matchTime);

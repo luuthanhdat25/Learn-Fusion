@@ -7,10 +7,14 @@ using UnityEngine;
 public class LocalInputPoller : NetworkBehaviour, INetworkRunnerCallbacks
 {
     [SerializeField] private PlayerController playerController;
+    [SerializeField] private Camera localCamera;
+
+    private const string AXIS_HORIZONTAL = "Horizontal";
+    private const string BUTTON_FIRE1 = "Fire1";
 
     public override void Spawned()
     {
-        if(Runner.LocalPlayer == Object.InputAuthority)
+        if (Object.IsLocalPlayer())
         {
             Runner.AddCallbacks(this);
         }
@@ -18,9 +22,21 @@ public class LocalInputPoller : NetworkBehaviour, INetworkRunnerCallbacks
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        if (runner == null || !runner.IsRunning) return;
-        var data = playerController.GetPlayerDataInput();
-        input.Set(data);
+        if (runner == null || !runner.IsRunning || !playerController.AcceptAnyInput) return;
+
+        PlayerNetworkInput localInput = new PlayerNetworkInput();
+        localInput.HorizontalInput = Input.GetAxisRaw(AXIS_HORIZONTAL);
+        localInput.GunPivotRotation = CalculateQuaternionPivotRotateFromMouse();
+        localInput.NetworkButtons.Set(PlayerInputButtons.Jump, Input.GetKey(KeyCode.Space));
+        localInput.NetworkButtons.Set(PlayerInputButtons.Shoot, Input.GetButton(BUTTON_FIRE1));
+        input.Set(localInput);
+    }
+
+    private Quaternion CalculateQuaternionPivotRotateFromMouse()
+    {
+        var direction = localCamera.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        return Quaternion.AngleAxis(angle, Vector3.forward);
     }
 
     public void OnConnectedToServer(NetworkRunner runner)
@@ -80,6 +96,26 @@ public class LocalInputPoller : NetworkBehaviour, INetworkRunnerCallbacks
     }
 
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
+    {
+    }
+
+    public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
+    {
+    }
+
+    public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
+    {
+    }
+
+    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
+    {
+    }
+
+    public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data)
+    {
+    }
+
+    public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress)
     {
     }
 }
