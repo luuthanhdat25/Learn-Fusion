@@ -17,6 +17,7 @@ public class PlayerHealthController : NetworkBehaviour
 
     [Networked] private int currentHealthAmount { get; set; }
     private ChangeDetector _changes;
+    private GameStateManager gameManager;
 
     public override void Spawned()
     {
@@ -24,6 +25,7 @@ public class PlayerHealthController : NetworkBehaviour
         currentHealthAmount = MAX_HEALTH_AMOUNT;
         collider2D = GetComponent<Collider2D>();
         _changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
+        gameManager = GlobalManagers.Instance.GameManager;
     }
 
     // Call from server to server to deduct health
@@ -90,8 +92,15 @@ public class PlayerHealthController : NetworkBehaviour
 
         if (healthAmount <= 0)
         {
-            playerController.KillPlayer();
-            Debug.Log("Player is dead");
+            if(gameManager.State == GameStateManager.GameState.Running)
+            {
+                playerController.KillPlayer();
+                Debug.Log("Player is dead");
+            }
+            else
+            {
+                playerController.KillPlayer();
+            }
         }
     }
 

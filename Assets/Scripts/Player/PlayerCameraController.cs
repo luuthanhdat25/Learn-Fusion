@@ -8,7 +8,7 @@ public class PlayerCameraController : MonoBehaviour
 
     private void Start()
     {
-        cinemachineConfiner2D.m_BoundingShape2D = GlobalManagers.Instance.GameManager.cameraBound;
+        cinemachineConfiner2D.m_BoundingShape2D = GlobalManagers.Instance.GameManager.CameraBound;
     }
 
     public void ShakeCamera(Vector3 skakeAmount)

@@ -17,17 +17,28 @@ public class PlayerWeaponController : NetworkBehaviour
     [Networked] private NetworkBool playMuzzleEffect { get; set; }
     [Networked, HideInInspector] public NetworkBool IsHoldingShootingKey { get; set; }
     private ChangeDetector _changes;
+    private GameStateManager gameManager;
 
     public override void Spawned()
     {
-        Runner.SetIsSimulated(Object, true);
+        pivotToRotate.gameObject.SetActive(false);
 
+        Runner.SetIsSimulated(Object, true);
         _changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
+        gameManager = GlobalManagers.Instance.GameManager;
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    public void Rpc_ActiveWeapon()
+    {
+        pivotToRotate.gameObject.SetActive(true);
     }
 
     public override void FixedUpdateNetwork()
     {
-        if(Runner.TryGetInputForPlayer<PlayerNetworkInput>(Object.InputAuthority, out var input))
+        if (gameManager.State != GameStateManager.GameState.Running) return;
+
+        if (Runner.TryGetInputForPlayer<PlayerNetworkInput>(Object.InputAuthority, out var input))
         {
             if (playerController.AcceptAnyInput)
             {
@@ -36,7 +47,6 @@ public class PlayerWeaponController : NetworkBehaviour
                 // Just one player can change currentPlayerPivotRotation
                 // When it change, it will update currentPlayerPivotRotation for all client
                 currentPlayerPivotRotation = input.GunPivotRotation;
-
             }
             else
             {
@@ -44,7 +54,6 @@ public class PlayerWeaponController : NetworkBehaviour
                 playMuzzleEffect = false;
                 buttonPrev = default;
             }
-
         }
 
         pivotToRotate.rotation = currentPlayerPivotRotation;

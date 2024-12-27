@@ -1,5 +1,4 @@
 using Fusion;
-using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -37,10 +36,7 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
     {
         if (Runner.IsServer && !Runner.TryGetPlayerObject(playerRef, out _))
         {
-            int index = playerRef.AsIndex % spawnPoints.Length;
-            var spawnPoint = spawnPoints[index].position;
-            var playerObject = Runner.Spawn(playerNetworkPrefab, spawnPoint, Quaternion.identity, playerRef);
-
+            var playerObject = Runner.Spawn(playerNetworkPrefab, GetSpawnPointByPlayerIndex(playerRef), Quaternion.identity, playerRef);
             Runner.SetPlayerObject(playerRef, playerObject);
         }
     }
@@ -48,6 +44,12 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
     public Vector2 GetRandomSpawnPointPosition()
     {
         return spawnPoints[UnityEngine.Random.Range(0, spawnPoints.Length)].transform.position;
+    }
+
+    public Vector3 GetSpawnPointByPlayerIndex(PlayerRef playerRef)
+    {
+        int index = playerRef.AsIndex % spawnPoints.Length;
+        return spawnPoints[index].position;
     }
 
     /// <summary>
@@ -85,4 +87,31 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
 
         spawnedPlayers.Add(playerRef, networkObject);
     }
+
+    /*public void HideAndTeleportAllPlayerToStartPosition()
+    {
+        if (!Object.HasStateAuthority) return;
+        foreach (var item in spawnedPlayers)
+        {
+            PlayerController playerController = item.Value.GetComponent<PlayerController>();
+            if (playerController != null) 
+            {
+                playerController.HidePlayer();
+            }
+        }
+    }*/
+
+    /*public void RespawnAllPlayerToStartGame()
+    {
+        if (!Object.HasStateAuthority) return;
+        foreach (var item in spawnedPlayers)
+        {
+            PlayerController playerController = item.Value.GetComponent<PlayerController>();
+            if (playerController != null)
+            {
+                playerController.RespawnPlayer();
+                playerController.PlayerWeaponController.Rpc_ActiveWeapon();
+            }
+        }
+    }*/
 }

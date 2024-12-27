@@ -1,5 +1,6 @@
 using Fusion;
 using Fusion.Addons.Physics;
+using System;
 using UnityEngine;
 
 public class PlayerController : NetworkBehaviour
@@ -17,10 +18,9 @@ public class PlayerController : NetworkBehaviour
 
     private new Rigidbody2D rigidbody2D;
     private PlayerVisualController playerVisualController;
-    private NetworkRigidbody2D networkRigidbody2D;
-    private ChangeDetector _changes;
+    private GameStateManager gameManager;
 
-    public bool AcceptAnyInput => IsPlayerAlive && !GameManager.IsMatchOver;
+    public bool AcceptAnyInput => IsPlayerAlive && !GameStateManager.IsMatchOver;
 
     [Networked, HideInInspector] public NetworkBool IsPlayerAlive { get; set; }
     [Networked] public TickTimer RespawnTimer { get; set; }
@@ -32,13 +32,14 @@ public class PlayerController : NetworkBehaviour
     {
         Runner.SetIsSimulated(Object, true);
 
-        _changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
         rigidbody2D = GetComponent<Rigidbody2D>();
         playerVisualController = GetComponent<PlayerVisualController>();
-        networkRigidbody2D = GetComponent<NetworkRigidbody2D>();
+        gameManager = GlobalManagers.Instance.GameManager;
         IsPlayerAlive = true;
         SetLocalObjects();
     }
+
+    public void SetServerNextSpawnPoint(Vector3 pos) => serverNextSpawnPoint = pos; 
 
     private void SetLocalObjects()
     {
@@ -51,7 +52,7 @@ public class PlayerController : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        CheckRespawnTimer();
+        if(gameManager.State != GameStateManager.GameState.Running) CheckRespawnTimer();
 
         if (Runner.TryGetInputForPlayer<PlayerNetworkInput>(Object.InputAuthority, out PlayerNetworkInput input))
         {
@@ -106,7 +107,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    private void RespawnPlayer()
+    public void RespawnPlayer()
     {
         rigidbody2D.simulated = true;
         IsPlayerAlive = true;
@@ -124,7 +125,7 @@ public class PlayerController : NetworkBehaviour
         if (Runner.IsServer)
         {
             serverNextSpawnPoint = GlobalManagers.Instance.PlayerSpawnerController.GetRandomSpawnPointPosition();
-            respawnToNewSpawnPointTimer = TickTimer.CreateFromSeconds(Runner, respawnTime - 1);
+            respawnToNewSpawnPointTimer = TickTimer.CreateFromSeconds(Runner, respawnTime/2);
         }
 
         rigidbody2D.simulated = false;

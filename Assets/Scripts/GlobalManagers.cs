@@ -8,7 +8,7 @@ public class GlobalManagers : MonoBehaviour
     [SerializeField] private GameObject parentObject;
     public PlayerSpawnerController PlayerSpawnerController { get; set; }
     public ObjectPoolingManager ObjectPoolingManager { get; set; }
-    public GameManager GameManager { get; set; }
+    public GameStateManager GameManager { get; set; }
 
     public PlayerData PlayerData = new PlayerData(); // Load from server
 

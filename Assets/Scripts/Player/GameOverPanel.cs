@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,17 +9,11 @@ public class GameOverPanel : MonoBehaviour
 
     private void Start()
     {
-        GlobalManagers.Instance.GameManager.OnGameOver += GameManager_OnGameOver;
         returnToLobby.onClick.AddListener(() => GlobalManagers.Instance.NetworkRunnerController.ShutDownRunner());
     }
 
-    private void GameManager_OnGameOver()
+    private void GameManager_OnGameStateChange()
     {
-        childObj.gameObject.SetActive(true);
-    }
-
-    private void OnDestroy()
-    {
-        GlobalManagers.Instance.GameManager.OnGameOver -= GameManager_OnGameOver;
+            childObj.gameObject.SetActive(true);
     }
 }
