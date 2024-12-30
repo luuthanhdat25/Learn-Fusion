@@ -101,7 +101,7 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
         }
     }*/
 
-    /*public void RespawnAllPlayerToStartGame()
+    public void RespawnAllPlayerToStartGame()
     {
         if (!Object.HasStateAuthority) return;
         foreach (var item in spawnedPlayers)
@@ -109,9 +109,9 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
             PlayerController playerController = item.Value.GetComponent<PlayerController>();
             if (playerController != null)
             {
-                playerController.RespawnPlayer();
+                playerController.TeleportToPosition(GetSpawnPointByPlayerIndex(item.Key));
                 playerController.PlayerWeaponController.Rpc_ActiveWeapon();
             }
         }
-    }*/
+    }
 }

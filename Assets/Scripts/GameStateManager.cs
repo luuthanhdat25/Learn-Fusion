@@ -11,10 +11,9 @@ public class GameStateManager : NetworkBehaviour
     [field:SerializeField] public Collider2D CameraBound { get; private set; }
     [SerializeField] private InGameUI inGameUI;
 
-    [SerializeField] private float startDelay = 4.0f;
-    [SerializeField] private int numberPlayerToStart = 2;
+    [SerializeField] private GameConfig gameConfig;
     [Networked] private TickTimer timer { get; set; }
-    [Networked] public GameState State { get; private set; }
+    [Networked, HideInInspector] public GameState State { get; private set; }
 
     public enum GameState
     {
@@ -30,6 +29,8 @@ public class GameStateManager : NetworkBehaviour
         {
             GlobalManagers.Instance.GameManager = this;
         }
+
+        inGameUI.SetWaitingPlayers(1, gameConfig.NumberPlayerToStart);
     }
 
     public override void Spawned()
@@ -37,7 +38,7 @@ public class GameStateManager : NetworkBehaviour
         Runner.SetIsSimulated(Object, true);
         IsMatchOver = false;
         camera.gameObject.SetActive(false);
-        timer = TickTimer.CreateFromSeconds(Runner, startDelay);
+        timer = TickTimer.CreateFromSeconds(Runner, gameConfig.StartDelay);
     }
 
     public override void FixedUpdateNetwork()
@@ -46,13 +47,15 @@ public class GameStateManager : NetworkBehaviour
         {
             case GameState.Waiting:
                 int playerCount = Runner.ActivePlayers.Count();
+                int numberPlayerToStart = gameConfig.NumberPlayerToStart;
                 inGameUI.SetWaitingPlayers(playerCount, numberPlayerToStart);
+                
                 if(playerCount >= numberPlayerToStart && Runner.IsServer)
                 {
                     Runner.SessionInfo.IsOpen = false;
 
                     State = GameState.Starting;
-                    timer = TickTimer.CreateFromSeconds(Runner, startDelay);
+                    timer = TickTimer.CreateFromSeconds(Runner, gameConfig.StartDelay);
                     inGameUI.Rpc_ShowCountDownStarting();
                     //GlobalManagers.Instance.PlayerSpawnerController.HideAndTeleportAllPlayerToStartPosition();
                 }
@@ -61,11 +64,11 @@ public class GameStateManager : NetworkBehaviour
             case GameState.Starting:
                 inGameUI.SetCountdownTimer(timer.RemainingTime(Runner));
 
-                if (Object.HasStateAuthority && timer.Expired(Runner))
+                if (Runner.IsServer && timer.Expired(Runner))
                 {
                     State = GameState.Running;
                     inGameUI.Rpc_HideCountDownStarting();
-                    //GlobalManagers.Instance.PlayerSpawnerController.RespawnAllPlayerToStartGame();
+                    GlobalManagers.Instance.PlayerSpawnerController.RespawnAllPlayerToStartGame();
                 }
                 break;
 

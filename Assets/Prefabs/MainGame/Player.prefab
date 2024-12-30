@@ -1175,10 +1175,10 @@ GameObject:
   - component: {fileID: 1983783128029681646}
   - component: {fileID: 8803044729417997785}
   - component: {fileID: 8589113760015384501}
+  - component: {fileID: 3212915577170586526}
   - component: {fileID: 5036468498151270605}
   - component: {fileID: 2869690719558536823}
   - component: {fileID: 4096888625543232722}
-  - component: {fileID: 3212915577170586526}
   - component: {fileID: 5354570273417953225}
   - component: {fileID: 8572455033709328772}
   - component: {fileID: 2190628619586274179}
@@ -1280,6 +1280,24 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.42863166, y: 0.6100216}
   m_EdgeRadius: 0
+--- !u!114 &3212915577170586526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4756324653431039057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1039544458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Config: 1
+  BroadRadius: 0.49111664
+  Offset: {x: 0, y: 0, z: 0}
+  GizmosColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  Hitboxes:
+  - {fileID: 6562307069060840532}
 --- !u!114 &5036468498151270605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1330,24 +1348,6 @@ MonoBehaviour:
   animator: {fileID: 8392594801382660466}
   pivotGunTransform: {fileID: 5198744988947810204}
   canvasTransform: {fileID: 8249056946765162753}
---- !u!114 &3212915577170586526
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4756324653431039057}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1039544458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Config: 1
-  BroadRadius: 0.49111664
-  Offset: {x: 0, y: 0, z: 0}
-  GizmosColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  Hitboxes:
-  - {fileID: 6562307069060840532}
 --- !u!114 &5354570273417953225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1394,9 +1394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b53aca481271a364b9c0faa676a66ccd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 6
-  jumpForce: 800
-  respawnTime: 2
+  playerConfig: {fileID: 11400000, guid: 9bcd3fc475c700c458fa7b48c58ac7e4, type: 2}
   cam: {fileID: 1342776279434968743}
   playerHealthController: {fileID: 5354570273417953225}
   <PlayerWeaponController>k__BackingField: {fileID: 2869690719558536823}
@@ -1404,6 +1402,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   groundDefectTransform: {fileID: 6127065426335141509}
+  rigidbody2D: {fileID: 8803044729417997785}
+  playerVisualController: {fileID: 4096888625543232722}
+  networkRigidbody2D: {fileID: 692791584759189113}
   _IsPlayerAlive:
     _value: 0
 --- !u!114 &692791584759189113
@@ -1446,9 +1447,9 @@ MonoBehaviour:
   Flags: 262145
   NestedObjects: []
   NetworkedBehaviours:
+  - {fileID: 3212915577170586526}
   - {fileID: 5036468498151270605}
   - {fileID: 2869690719558536823}
-  - {fileID: 3212915577170586526}
   - {fileID: 5354570273417953225}
   - {fileID: 2190628619586274179}
   - {fileID: 692791584759189113}

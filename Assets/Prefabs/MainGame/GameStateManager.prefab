@@ -323,8 +323,7 @@ MonoBehaviour:
   camera: {fileID: 0}
   <CameraBound>k__BackingField: {fileID: 0}
   inGameUI: {fileID: 4324420428304585075}
-  startDelay: 4
-  numberPlayerToStart: 2
+  gameConfig: {fileID: 11400000, guid: 0984ed7d0e4c0e54cbef91d9b4c3c3ab, type: 2}
   _State: 0
 --- !u!1 &5625911658973540065
 GameObject:

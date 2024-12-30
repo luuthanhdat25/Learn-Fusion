@@ -13,19 +13,19 @@ public class RespawnPanel : NetworkBehaviour
         Runner.SetIsSimulated(Object, true);
     }
 
-    public override void FixedUpdateNetwork()
-    {
-        if (playerController.Object.IsLocalPlayer())
-        {
-            bool isTimerRunning = playerController.RespawnTimer.IsRunning;
+    //public override void FixedUpdateNetwork()
+    //{
+    //    if (playerController.Object.IsLocalPlayer())
+    //    {
+    //        bool isTimerRunning = playerController.RespawnTimer.IsRunning;
 
-            childObject.SetActive(isTimerRunning);
+    //        childObject.SetActive(isTimerRunning);
 
-            if (isTimerRunning && playerController.RespawnTimer.RemainingTime(Runner).HasValue)
-            {
-                float timerFloat = playerController.RespawnTimer.RemainingTime(Runner).Value;
-                respawnAmountText.text = Mathf.RoundToInt(timerFloat).ToString();
-            }
-        }
-    }
+    //        if (isTimerRunning && playerController.RespawnTimer.RemainingTime(Runner).HasValue)
+    //        {
+    //            float timerFloat = playerController.RespawnTimer.RemainingTime(Runner).Value;
+    //            respawnAmountText.text = Mathf.RoundToInt(timerFloat).ToString();
+    //        }
+    //    }
+    //}
 }

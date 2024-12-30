@@ -28,7 +28,7 @@ public class PlayerWeaponController : NetworkBehaviour
         gameManager = GlobalManagers.Instance.GameManager;
     }
 
-    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public void Rpc_ActiveWeapon()
     {
         pivotToRotate.gameObject.SetActive(true);

@@ -47,7 +47,14 @@ public class PlayerHealthController : NetworkBehaviour
             var isHitDeathGround = Runner.GetPhysicsScene2D().OverlapBox(transform.position, collider2D.bounds.size, 0, groundLayerMark);
             if (isHitDeathGround)
             {
-                Rpc_DeductPlayerHealth(MAX_HEALTH_AMOUNT);
+                if (gameManager.State == GameStateManager.GameState.Running)
+                {
+                    Rpc_DeductPlayerHealth(MAX_HEALTH_AMOUNT);
+                }
+                else
+                {
+                    playerController.RespawnWhenWaiting(GlobalManagers.Instance.PlayerSpawnerController.GetRandomSpawnPointPosition());
+                }
             }        
         }
     }
@@ -99,7 +106,7 @@ public class PlayerHealthController : NetworkBehaviour
             }
             else
             {
-                playerController.KillPlayer();
+                playerController.RespawnWhenWaiting(GlobalManagers.Instance.PlayerSpawnerController.GetRandomSpawnPointPosition());
             }
         }
     }
