@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: GameConfig_Default
   m_EditorClassIdentifier: 
   StartDelay: 4
-  NumberPlayerToStart: 2
+  NumberPlayerToStart: 3
