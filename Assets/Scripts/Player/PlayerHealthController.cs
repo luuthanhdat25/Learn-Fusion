@@ -102,6 +102,7 @@ public class PlayerHealthController : NetworkBehaviour
             if(gameManager.State == GameStateManager.GameState.Running)
             {
                 playerController.KillPlayer();
+                GlobalManagers.Instance.PlayerSpawnerController.PlayerDead(Object.InputAuthority);
                 Debug.Log("Player is dead");
             }
             else

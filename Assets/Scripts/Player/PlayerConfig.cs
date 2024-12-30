@@ -5,5 +5,4 @@ public class PlayerConfig : ScriptableObject
 {
     public float MoveSpeed;
     public float JumpForce;
-    public float RespawnTime;
 }

@@ -1,29 +1,27 @@
 using Fusion;
 using Fusion.Addons.Physics;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class PlayerController : NetworkBehaviour
 {
     [SerializeField] private PlayerConfig playerConfig;
     [SerializeField] private GameObject cam;
     [SerializeField] private PlayerHealthController playerHealthController;
+    [SerializeField] private PlayerVisualController playerVisualController;
     [field: SerializeField] public PlayerWeaponController PlayerWeaponController { get; private set; }
+    [SerializeField] private NetworkRigidbody2D networkRigidbody2D;
+    [SerializeField] private GameOverPanel gameOverPanel;
     
     [Header("Check Ground")]
     [SerializeField] private LayerMask groundLayerMark;
     [SerializeField] private Transform groundDefectTransform;
     [SerializeField] private new Rigidbody2D rigidbody2D;
-    [SerializeField] private PlayerVisualController playerVisualController;
-    [SerializeField] private NetworkRigidbody2D networkRigidbody2D;
 
     private GameStateManager gameManager;
 
     public bool AcceptAnyInput => IsPlayerAlive && !GameStateManager.IsMatchOver;
 
     [Networked, HideInInspector] public NetworkBool IsPlayerAlive { get; set; }
-    //[Networked] public TickTimer RespawnTimer { get; set; }
-    //[Networked] private TickTimer respawnToNewSpawnPointTimer { get; set; }
     [Networked] private NetworkButtons buttonPrev { get; set; }
     [Networked] private Vector2 serverNextSpawnPoint { get; set; }
 
@@ -49,14 +47,11 @@ public class PlayerController : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        //if(gameManager.State != GameStateManager.GameState.Running) CheckRespawnTimer();
-
         if (Runner.TryGetInputForPlayer<PlayerNetworkInput>(Object.InputAuthority, out PlayerNetworkInput input))
         {
             if (AcceptAnyInput)
             {
                 rigidbody2D.velocity = new Vector2(input.HorizontalInput * playerConfig.MoveSpeed, rigidbody2D.velocity.y);
-
                 CheckJumpInput(input);
                 buttonPrev = input.NetworkButtons;
             }
@@ -87,23 +82,6 @@ public class PlayerController : NetworkBehaviour
             groundLayerMark);
     }
 
-    //private void CheckRespawnTimer()
-    //{
-    //    if (IsPlayerAlive) return;
-
-    //    if (respawnToNewSpawnPointTimer.Expired(Runner))
-    //    {
-    //        TeleportToPosition(serverNextSpawnPoint);
-    //        respawnToNewSpawnPointTimer = TickTimer.None;
-    //    }
-
-    //    if (RespawnTimer.ExpiredOrNotRunning(Runner))
-    //    {
-    //        RespawnTimer = TickTimer.None;
-    //        RespawnPlayer();
-    //    }
-    //}
-
     public void TeleportToPosition(Vector3 position) 
         => networkRigidbody2D.Teleport(position);
 
@@ -128,18 +106,14 @@ public class PlayerController : NetworkBehaviour
 
     public void KillPlayer()
     {
-        //float respawnTime = playerConfig.RespawnTime;
-
-        //if (Runner.IsServer)
-        //{
-            //serverNextSpawnPoint = GlobalManagers.Instance.PlayerSpawnerController.GetRandomSpawnPointPosition();
-            //respawnToNewSpawnPointTimer = TickTimer.CreateFromSeconds(Runner, respawnTime/2);
-        //}
-
         rigidbody2D.simulated = false;
         IsPlayerAlive = false;
         playerVisualController.TriggerDieAnimation();
-        //RespawnTimer = TickTimer.CreateFromSeconds(Runner, respawnTime);
+
+        if (Object.HasStateAuthority)
+        {
+            Rpc_ShowGameOverPanel(GlobalManagers.Instance.PlayerSpawnerController.TotalPlayerAlive);
+        }
     }
 
     // Destroy completed player, not set active false
@@ -148,4 +122,11 @@ public class PlayerController : NetworkBehaviour
         GlobalManagers.Instance.ObjectPoolingManager.RemoveNetworkObjectFromDic(Object);
         Destroy(gameObject);
     }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    public void Rpc_ShowGameOverPanel(int rank)
+    {
+        gameOverPanel.Show(rank);
+    }
 }
+

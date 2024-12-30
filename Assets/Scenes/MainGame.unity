@@ -641,6 +641,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7301322483961219400}
     - target: {fileID: 802430431550702314, guid: 834b8f51d318af94abf044635de18ff6, type: 3}
+      propertyPath: <CameraBound>k__BackingField
+      value: 
+      objectReference: {fileID: 1594825805}
+    - target: {fileID: 802430431550702314, guid: 834b8f51d318af94abf044635de18ff6, type: 3}
       propertyPath: <cameraBound>k__BackingField
       value: 
       objectReference: {fileID: 1594825805}

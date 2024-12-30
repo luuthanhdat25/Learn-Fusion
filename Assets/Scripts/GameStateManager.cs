@@ -57,7 +57,6 @@ public class GameStateManager : NetworkBehaviour
                     State = GameState.Starting;
                     timer = TickTimer.CreateFromSeconds(Runner, gameConfig.StartDelay);
                     inGameUI.Rpc_ShowCountDownStarting();
-                    //GlobalManagers.Instance.PlayerSpawnerController.HideAndTeleportAllPlayerToStartPosition();
                 }
                 break;
 
@@ -73,19 +72,27 @@ public class GameStateManager : NetworkBehaviour
                 break;
 
             case GameState.Running:
-                /*if (timer.Expired(Runner))
-                    EndGame();*/
-                //When hvae 1 player left
                 break;
 
             case GameState.Ending:
-                /*UI?.SetWinner(_winner, timer.RemainingTime(Runner));
-
-                if (timer.Expired(Runner))
-                    Runner.Shutdown();*/
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
+    }
+
+    public void EndGame()
+    {
+        if (!Runner.IsServer) return;
+        var finalPlayer = GlobalManagers.Instance.PlayerSpawnerController.GetFinalPlayerAlive();
+        if(finalPlayer != null)
+        {
+            finalPlayer.Rpc_ShowGameOverPanel(1);
+        }
+        else
+        {
+            Debug.LogError($"[{nameof(GameStateManager)}] Final Player is NULL");
+        }
+        State = GameState.Ending;
     }
 }

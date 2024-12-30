@@ -1,6 +1,6 @@
 using Fusion;
+using System;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerLeft
@@ -9,6 +9,15 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
     [SerializeField] private Transform[] spawnPoints;
 
     private Dictionary<PlayerRef, NetworkObject> spawnedPlayers = new Dictionary<PlayerRef, NetworkObject>();
+    [Networked, HideInInspector, OnChangedRender(nameof(OnTotalPlayerAliveChange))] public int TotalPlayerAlive { get; private set; }
+
+    private void OnTotalPlayerAliveChange()
+    {
+        if(TotalPlayerAlive == 1 && Runner.IsServer)
+        {
+            GlobalManagers.Instance.GameManager.EndGame();
+        }
+    }
 
     private void Awake()
     {
@@ -73,10 +82,27 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
         {
             if(spawnedPlayers.TryGetValue(playerRef, out NetworkObject playerObject))
             {
+                if(playerObject.TryGetComponent<PlayerController>(out var playerController))
+                {
+                    if (playerController.IsPlayerAlive) //When player still alive and out room
+                    {
+                        Debug.Log($"[{nameof(PlayerSpawnerController)}] Player [{GlobalManagers.Instance.PlayerData.GetNickName()}] is out Room");
+                        TotalPlayerAlive--;
+                    } 
+                }
                 spawnedPlayers.Remove(playerRef);
                 Runner.Despawn(playerObject);
             }
             Runner.SetPlayerObject(playerRef, null);
+        }
+    }
+
+    public void PlayerDead(PlayerRef playerRef)
+    {
+        if (spawnedPlayers.TryGetValue(playerRef, out NetworkObject playerObject))
+        {
+            TotalPlayerAlive--;
+            Debug.Log($"[{nameof(PlayerSpawnerController)}] Player [{GlobalManagers.Instance.PlayerData.GetNickName()}] is dead");
         }
     }
 
@@ -88,30 +114,35 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
         spawnedPlayers.Add(playerRef, networkObject);
     }
 
-    /*public void HideAndTeleportAllPlayerToStartPosition()
-    {
-        if (!Object.HasStateAuthority) return;
-        foreach (var item in spawnedPlayers)
-        {
-            PlayerController playerController = item.Value.GetComponent<PlayerController>();
-            if (playerController != null) 
-            {
-                playerController.HidePlayer();
-            }
-        }
-    }*/
-
     public void RespawnAllPlayerToStartGame()
     {
         if (!Object.HasStateAuthority) return;
+
+        int numberOfPlayer = 0;
         foreach (var item in spawnedPlayers)
         {
             PlayerController playerController = item.Value.GetComponent<PlayerController>();
             if (playerController != null)
             {
+                numberOfPlayer++;
                 playerController.TeleportToPosition(GetSpawnPointByPlayerIndex(item.Key));
                 playerController.PlayerWeaponController.Rpc_ActiveWeapon();
             }
         }
+
+        TotalPlayerAlive = numberOfPlayer;
+    }
+
+    public PlayerController GetFinalPlayerAlive()
+    {
+        foreach (var item in spawnedPlayers)
+        {
+            PlayerController playerController = item.Value.GetComponent<PlayerController>();
+            if (playerController != null && playerController.IsPlayerAlive)
+            {
+                return playerController;
+            }
+        }
+        return null;
     }
 }
