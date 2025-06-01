@@ -23,7 +23,7 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
     {
         OnStartedRunnerConnection?.Invoke();
 
-        if(networkRunnerInstance == null)
+        if (networkRunnerInstance == null)
         {
             networkRunnerInstance = Instantiate(networkRunnerPrefab);
         }
@@ -127,7 +127,7 @@ public class NetworkRunnerController : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
     {
-       
+
     }
 
     public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)

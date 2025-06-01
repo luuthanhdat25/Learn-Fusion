@@ -13,15 +13,15 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
 
     private void OnTotalPlayerAliveChange()
     {
-        if(TotalPlayerAlive == 1 && Runner.IsServer)
-        {
-            GlobalManagers.Instance.GameManager.EndGame();
-        }
+        // if(TotalPlayerAlive == 1 && Runner.IsServer)
+        // {
+        //     GlobalManagers.Instance.GameManager.EndGame();
+        // }
     }
 
     private void Awake()
     {
-        if(GlobalManagers.Instance != null)
+        if (GlobalManagers.Instance != null)
         {
             GlobalManagers.Instance.PlayerSpawnerController = this;
         }
@@ -32,7 +32,7 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
     /// </summary>
     public override void Spawned()
     {
-        if(Runner.IsServer)
+        if (Runner.IsServer)
         {
             foreach (var item in Runner.ActivePlayers)
             {
@@ -80,15 +80,15 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
     {
         if (Runner.IsServer)
         {
-            if(spawnedPlayers.TryGetValue(playerRef, out NetworkObject playerObject))
+            if (spawnedPlayers.TryGetValue(playerRef, out NetworkObject playerObject))
             {
-                if(playerObject.TryGetComponent<PlayerController>(out var playerController))
+                if (playerObject.TryGetComponent<PlayerController>(out var playerController))
                 {
                     if (playerController.IsPlayerAlive) //When player still alive and out room
                     {
                         Debug.Log($"[{nameof(PlayerSpawnerController)}] Player [{GlobalManagers.Instance.PlayerData.GetNickName()}] is out Room");
                         TotalPlayerAlive--;
-                    } 
+                    }
                 }
                 spawnedPlayers.Remove(playerRef);
                 Runner.Despawn(playerObject);
@@ -108,7 +108,7 @@ public class PlayerSpawnerController : NetworkBehaviour, IPlayerJoined, IPlayerL
 
     public void AddEntry(PlayerRef playerRef, NetworkObject networkObject)
     {
-        if (spawnedPlayers.ContainsKey(playerRef) 
+        if (spawnedPlayers.ContainsKey(playerRef)
             || networkObject == null) return;
 
         spawnedPlayers.Add(playerRef, networkObject);

@@ -1320,6 +1320,7 @@ GameObject:
   - component: {fileID: 692791584759189113}
   - component: {fileID: 4697433740042546707}
   - component: {fileID: 3059724121859380305}
+  - component: {fileID: 2066221747095429496}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -1428,7 +1429,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Config: 1
-  BroadRadius: 0.49111664
+  BroadRadius: 0.5142057
   Offset: {x: 0, y: 0, z: 0}
   GizmosColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   Hitboxes:
@@ -1590,6 +1591,7 @@ MonoBehaviour:
   - {fileID: 2190628619586274179}
   - {fileID: 692791584759189113}
   - {fileID: 3059724121859380305}
+  - {fileID: 2066221747095429496}
   - {fileID: 8331395058295569137}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &3059724121859380305
@@ -1609,6 +1611,24 @@ MonoBehaviour:
     _length: 0
     _data:
       Data: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+--- !u!114 &2066221747095429496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4756324653431039057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 506319458, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Animator: {fileID: 8392594801382660466}
+  ApplyTiming: 2
+  SyncSettings: -1
+  StateHashes: 000000002b1a167c794069558b7cfd670f5f2b88bad385b1389cc93437b935014e73a6a7f381332777a2e5c8602a8555de8e30ace78a3923
+  TriggerHashes: 0000000037b93501f3813327
+  TotalWords: 6
 --- !u!1 &4902142258930229463
 GameObject:
   m_ObjectHideFlags: 0
